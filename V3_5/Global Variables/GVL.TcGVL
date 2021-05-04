@@ -1,0 +1,1481 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <GVL Name="GVL" Id="{59718708-3e8f-4521-b3bb-eebf9372b7e6}">
+    <Declaration><![CDATA[
+
+
+
+
+
+{attribute 'Tc2GvlVarNames'}
+VAR_GLOBAL
+
+
+(*_____________________________________________________________________________________________________________________________*)
+
+
+	(*Ab hier Sind Globale Variablen Aquaero*)
+
+
+
+	Main_Relais  AT%Q*:BOOL;
+	Reset_M_R: BOOL;
+	Set_M_R: BOOL;
+	Reset_D_M: BOOL;
+	Set_D_M: BOOL;
+	Switch_OFF_Mainswitch: BOOL;
+
+
+
+
+
+
+
+
+
+	(*Not-Aus Relais*)
+	Feedback_Mainswitch AT%I*:BOOL;	(*EIngang NotAus-Relais*)
+	Start_Mainswitch: BOOL;
+	OUT_Mainswitch AT%Q*:BOOL;	(*Pulsausgang NotAus-Relais*)
+	Mainswitch_OK: BOOL;
+	ERROR_Mainswitch: BOOL;
+	RESET_ERROR_Mainswitch: BOOL;
+	Cabinet_OK: BOOL;
+	VDC_24_OK AT%I*:BOOL;	(*Netzgerät OK*)
+
+	VDC_OK: BOOL;
+
+
+
+
+
+
+
+
+
+
+
+(* MODBUS *)
+
+	mb_Input_Coils        : ARRAY [0..255] OF BOOL;
+	mb_Output_Coils       : ARRAY [0..255] OF BOOL;
+	mb_Input_Registers    : ARRAY [0..255] OF WORD;
+	mb_Output_Registers   : ARRAY [0..255] OF WORD;
+
+
+
+	Register_IN1: INT;
+	Register_IN2: INT;
+	Register_IN3: INT;
+	Register_IN4: INT;
+	Register_IN5: INT;
+	Register_IN6: INT;
+	Register_IN7: INT;
+	Register_IN8: INT;
+	Register_IN9: INT;
+	Register_IN10: INT;
+
+
+
+(*Regler_Kompressor Scroll*)
+
+
+	Activate_controller_comp: BOOL;
+	fRegelgroesse_comp: REAL;
+	fSollwert_comp: REAL;				(*Ist zurzeit auf Sollert Dampfkammerdruck bezogen, der Kompressor ist das Stellglied*)
+	fManual_controller_comp: REAL;
+	Set_Manual_controller_comp: BOOL;
+	fStellwert_comp: REAL;
+	Reset_Controller_comp:BOOL;
+	fKP_Controller_comp: REAL;
+	fKI_Controller_comp: REAL;
+
+
+
+
+(*Regler_Kompressor Klauenkolbenkomp.*)
+
+	Activate_controller_Primaer_comp: BOOL;
+	fRegelgroesse_Primaer_comp: REAL;
+	fSollwert_Primaer_comp: REAL;
+	fManual_controller_Primaer_comp: REAL;
+	Set_Manual_controller_Primaer_comp: BOOL;
+	fStellwert_Primaer_comp: REAL;
+	Reset_Controller_Primaer_comp:BOOL;
+	fKP_Controller_Primaer_comp: REAL:=1;
+	fKI_Controller_Primaer_comp: REAL:=0.1;
+
+
+
+(*Regler_Umdampfventi*)
+
+
+	Activate_controller_V_Umdampf: BOOL;
+	fRegelgroesse_V_Umdampf: REAL;
+	fSollwert_V_Umdampf: REAL;				(*Ist zurzeit auf Sollert Dampfkammerdruck bezogen, der Kompressor ist das Stellglied*)
+	fManual_controller_V_Umdampf: REAL;
+	Set_Manual_controller_V_Umdampf: BOOL;
+	fStellwert_V_Umdampf: REAL;
+	Reset_Controller_V_Umdampf:BOOL;
+	fKP_Controller_V_Umdampf: REAL;
+	fKI_Controller_V_Umdampf: REAL;
+
+
+
+(*Regler_Ventilator*)
+
+	Activate_controller_Venti:  BOOL;
+	fRegelgroesse_Venti: REAL;
+	fSollwert_Venti: REAL;				(*Ist zurzeit auf Sollert Dampfkammerdruck bezogen, der Kompressor ist das Stellglied*)
+	fManual_controller_Venti: REAL;
+	Set_Manual_controller_Venti: BOOL;
+	fStellwert_Venti: REAL;
+	Reset_Controller_Venti:BOOL;
+	fKP_Controller_Venti: REAL;
+	fKI_Controller_Venti: REAL;
+
+
+
+
+(*Regler_Nadelventil Swagelock*)
+
+
+
+	Activate_controller_Needlevalve: BOOL;
+	fRegelgroesse_NV: REAL;
+	fSollwert_NV: REAL;				(*Ist zurzeit auf Sollert Dampfkammerdruck bezogen, der Kompressor ist das Stellglied*)
+	fManual_controller_NV: REAL;
+	Set_Manual_controller_NV: BOOL;
+	fStellwert_NV: REAL;
+	Reset_Controller_NV:BOOL;
+	fKP_Controller_NV: REAL;
+	fKI_Controller_NV: REAL;
+
+	Sollwert_OUT_NV :INT;
+	Istwert_IN_NV :INT;
+
+
+
+
+
+	C_ADS: INT;
+	C_DES: INT;
+
+
+
+
+(*Ab hier: Sensorik und Aktorik des neuen Monstartors, oberhalb sind teils nicht verwendete Variablen!!*)
+
+
+
+
+
+	T_Vor_WT_IN AT%I* : INT;
+	T_Vor_WT:REAL;
+	T_Vor_WT_Visu:REAL;
+	T_nach_WT_IN AT%I* : INT;
+	T_nach_WT:REAL;
+	T_nach_WT_Visu:REAL;
+
+	T_HE_Einduesung_Oben_IN AT%I* : INT;
+	T_HE_Einduesung_Oben:REAL;
+	T_HE_Einduesung_Oben_Visu:REAL;
+
+	T_HE_Einduesung_Unten_IN AT%I* : INT;
+	T_HE_Einduesung_Unten:REAL;
+	T_HE_Einduesung_Unten_Visu:REAL;
+
+	T_Einduesung_Unten_IN AT%I* : INT;
+	T_Einduesung_Unten:REAL;
+	T_Einduesung_Unten_Visu:REAL;
+
+	T_Einduesung_Oben_IN AT%I* : INT;
+	T_Einduesung_Oben:REAL;
+	T_Einduesung_Oben_Visu:REAL;
+
+
+	T_Absaugung_Oben_IN AT%I* : INT;
+	T_Absaugung_Oben:REAL;
+	T_Absaugung_Oben_Visu:REAL;
+
+	T_Absaugung_Unten_IN AT%I* : INT;
+	T_Absaugung_Unten:REAL;
+	T_Absaugung_Unten_Visu:REAL;
+
+
+	T_Vor_UmdampfLuefter_IN AT%I* : INT;
+	T_Vor_UmdampfLuefter:REAL;
+	T_Vor_UmdampfLuefter_Visu:REAL;
+
+	T_Komp_Auslass_IN AT%I* : INT;
+	T_Komp_Auslass:REAL;
+	T_Komp_Auslass_Visu:REAL;
+
+	T_Komp_Einlass_IN AT%I* : INT;
+	T_Komp_Einlass:REAL;
+	T_Komp_Einlass_Visu:REAL;
+
+
+	T_Kond_Auslass_IN AT%I* : INT;
+	T_Kond_Auslass:REAL;
+	T_Kond_Auslass_Visu:REAL;
+
+	T_DK_Oben_IN AT%I* : INT;
+	T_DK_Oben:REAL;
+	T_DK_Oben_Visu:REAL;
+
+	T_DK_Mitte_IN AT%I* : INT;
+	T_DK_Mitte:REAL;
+	T_DK_Mitte_Visu:REAL;
+
+	T_DK_Unten_IN AT%I* : INT;
+	T_DK_Unten:REAL;
+	T_DK_Unten_Visu:REAL;
+	
+	
+	
+	
+	
+
+	T_Mat_Auslass1_IN AT%I* : INT;
+	T_Mat_Auslass1:REAL;
+	T_Mat_Auslass1_Visu:REAL;
+	T_Mat_Auslass2_IN AT%I* : INT;
+	T_Mat_Auslass2:REAL;
+	T_Mat_Auslass2_Visu:REAL;
+	T_Mat_Auslass3_IN AT%I* : INT;
+	T_Mat_Auslass3:REAL;
+	T_Mat_Auslass3_Visu:REAL;
+	T_Mat_Auslass4_IN AT%I* : INT;
+	T_Mat_Auslass4:REAL;
+	T_Mat_Auslass4_Visu:REAL;
+	
+
+	T_Mat_Auslass5_IN AT%I* : INT;
+	T_Mat_Auslass5:REAL;
+	T_Mat_Auslass5_Visu:REAL;
+	T_Mat_Auslass6_IN AT%I* : INT;
+	T_Mat_Auslass6:REAL;
+	T_Mat_Auslass6_Visu:REAL;
+	T_Mat_Auslass7_IN AT%I* : INT;
+	T_Mat_Auslass7:REAL;
+	T_Mat_Auslass7_Visu:REAL;
+	T_Mat_Auslass8_IN AT%I* : INT;
+	T_Mat_Auslass8:REAL;
+	T_Mat_Auslass8_Visu:REAL;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	T_Komp_Gehaeuse_IN AT%I* : INT;
+	T_Komp_Gehaeuse:REAL;
+	T_Komp_Gehaeuse_Visu:REAL;
+
+
+	T_DK_Band_oben1_IN AT%I* : INT;
+	T_DK_Band_oben1:REAL;
+	T_DK_Band_oben1_Visu:REAL;
+
+	T_DK_Band_oben3_IN AT%I* : INT;
+	T_DK_Band_oben3:REAL;
+	T_DK_Band_oben3_Visu:REAL;
+
+
+	T_DK_Band_unten1_IN AT%I* : INT;
+	T_DK_Band_unten1:REAL;
+	T_DK_Band_unten1_Visu:REAL;
+	
+
+	
+	T_DK_Band_unten3_IN AT%I* : INT;
+	T_DK_Band_unten3:REAL;
+	T_DK_Band_unten3_Visu:REAL;
+	
+
+	T_DK_Steigband1_IN AT%I* : INT;
+	T_DK_Steigband1:REAL;
+	T_DK_Steigband1_Visu:REAL;
+	T_DK_Steigband2_IN AT%I* : INT;
+	T_DK_Steigband2:REAL;
+	T_DK_Steigband2_Visu:REAL;
+	T_DK_Steigband3_IN AT%I* : INT;
+	T_DK_Steigband3:REAL;
+	T_DK_Steigband3_Visu:REAL;
+	T_DK_Steigband4_IN AT%I* : INT;
+	T_DK_Steigband4:REAL;
+	T_DK_Steigband4_Visu:REAL;
+
+	
+	
+	
+	
+	
+	
+
+
+	Temp_Heatmatt1_IN   : INT;
+	Temp_Heatmatt2_IN   : INT;
+	Temp_Heatmatt3_IN   : INT;
+	Temp_Heatmatt4_IN   : INT;
+	Temp_Heatmatt5_IN   : INT;
+	Temp_Heatmatt6_IN   : INT;
+	Temp_Heatmatt7_IN   : INT;
+	Temp_Heatmatt8_IN  : INT;
+	Temp_Heatmatt9_IN   : INT;
+	Temp_Heatmatt10_IN   : INT;
+
+
+	
+
+	Temp_Heatmatt1 : INT;
+	Temp_Heatmatt2 : INT;
+	Temp_Heatmatt3 : INT;
+	Temp_Heatmatt4 : INT;
+	Temp_Heatmatt5 : INT;
+	Temp_Heatmatt6 : INT;
+	Temp_Heatmatt7 : INT;
+	Temp_Heatmatt8 : INT;
+	Temp_Heatmatt9 : INT;
+	Temp_Heatmatt10 : INT;
+
+	Temp_compressor_Self : INT;
+
+
+
+
+	P_Vor_WT_IN AT%I* : INT;
+	P_Vor_WT:REAL;
+	P_Vor_WT_Visu:REAL;
+	
+	P_nach_WT_IN AT%I* : INT;
+	P_nach_WT:REAL;
+	P_nach_WT_Visu:REAL;
+
+	P_Kond_Auslass_IN AT%I* : INT;
+	P_Kond_Auslass:REAL;
+	P_Kond_Auslass_VISU:REAL;
+
+	
+	
+
+	P_Durchfluss_IN  : INT;
+	P_Durchfluss:REAL;
+	P_Durchfluss_Visu:REAL;
+
+
+
+	P_Komp_Einlass_IN AT%I* : INT;
+	P_Komp_Einlass:REAL;
+	P_Komp_Einlass_Visu:REAL;
+
+
+	P_Komp_Auslass_IN AT%I* : INT;
+	P_Komp_Auslass:REAL;
+	P_Komp_Auslass_Visu:REAL;
+
+
+	W_Kond_Wasser_IN AT%I* : INT;
+	W_Kond_Wasser:REAL;
+	W_Kond_Wasser_Visu:REAL;
+
+
+
+	O2_IN AT%I* : INT;
+	O2:REAL;
+	O2_Visu:REAL;
+	O2_Sensor_Error AT%I* :BOOL;
+	O2_Sensor_Start AT%Q* :BOOL;
+	
+
+	PTC_IN:BOOL;
+	Motor_HOT:BOOL;
+
+	Switch_Heat_group1:BOOL;
+	Switch_Heat_group2:BOOL;
+	Switch_Heat_group3:BOOL;
+	Start_Auto_Export: BOOL;
+	Start_Auto_Export_OUT: BOOL;
+
+
+
+
+	(* Diverses (teils noch von älterenb Programmfunktionen*)
+
+	Pulse2_set_manu:BOOL;
+	Enable_Pulsgen2 :BOOL;
+	T_Pulstime_Pulsegen2: INT:=3;
+	T_HI_Pulsegen2: INT:=20;
+	Valve_YB7:BOOL;
+
+
+
+
+
+
+
+
+
+
+
+
+(*Strom und Energiemessung*)
+
+
+	(*Current_IN_HZE_Auffangbecken_L1 AT%I*:INT;
+	Current_IN_HZE_Auffangbecken_L2 AT%I*:INT;
+	Current_IN_HZE_Auffangbecken_L3 AT%I*:INT;*)
+
+	(*Current_IN_HEAT_Reg_1 AT%I*:INT;
+	Current_IN_HEAT_Reg_2 AT%I*:INT;
+	Current_IN_HEAT_Reg_3 AT%I*:INT;
+	Current_IN_HEAT_Reg_4 AT%I*:INT;
+	Current_IN_HEAT_Reg_5 AT%I*:INT;
+	Current_IN_HEAT_Reg_6 AT%I*:INT;
+	Current_IN_HEAT_Reg_7 AT%I*:INT;
+	Current_IN_HEAT_Reg_8 AT%I*:INT;*)
+	
+	Current_IN_SteamGen1 AT%I*:INT;
+	Current_IN_SteamGen2 AT%I*:INT;
+	Current_IN_SteamGen3 AT%I*:INT;
+	
+	
+	Current_IN_Compressor_L1 AT%I*:INT;
+	Current_IN_Compressor_L2 AT%I*:INT;
+	Current_IN_Compressor_L3 AT%I*:INT;
+	Current_IN_Heatreg_1_TO_4 AT%I*:INT;
+	Current_IN_Heatreg_5_TO_8 AT%I*:INT;
+	Current_IN_Heatreg_Compressor AT%I*:INT;
+	Current_IN_Fan_L1 AT%I*:INT;
+	Current_IN_Fan_L2 AT%I*:INT;
+	Current_IN_Fan_L3 AT%I*:INT;
+	Current_IN_Complete_L1 AT%I*:INT;
+	Current_IN_Complete_L2 AT%I*:INT;
+	Current_IN_Complete_L3 AT%I*:INT;
+
+
+
+	
+
+	Current_OUT_SteamVenti_L1:REAL;
+	Current_OUT_SteamVenti_L2:REAL;
+	Current_OUT_SteamVenti_L3:REAL;
+	Current_OUT_HEAT_Reg_1:REAL;
+	Current_OUT_HEAT_Reg_2:REAL;
+	Current_OUT_HEAT_Reg_3:REAL;
+	Current_OUT_HEAT_Reg_4:REAL;
+	Current_OUT_HEAT_Reg_5:REAL;
+	Current_OUT_HEAT_Reg_6:REAL;
+	Current_OUT_HEAT_Reg_7:REAL;
+	Current_OUT_HEAT_Reg_8:REAL;
+
+	Current_OUT_SteamGen1:REAL;
+	Current_OUT_SteamGen2:REAL;
+	Current_OUT_SteamGen3:REAL;
+
+
+
+
+	Current_OUT_Compressor_L1 :REAL;
+	Current_OUT_Compressor_L2 :REAL;
+	Current_OUT_Compressor_L3 :REAL;
+
+	Current_OUT_Heatreg_1_TO_4 :REAL;
+	Current_OUT_Heatreg_5_TO_8 :REAL;
+	Current_OUT_Heatreg_Compressor :REAL;
+	Current_OUT_Fan_L1:REAL;
+	Current_OUT_Fan_L2 :REAL;
+	Current_OUT_Fan_L3:REAL;
+	Current_OUT_Complete_L1 :REAL;
+	Current_OUT_Complete_L2 :REAL;
+	Current_OUT_Complete_L3 :REAL;
+
+
+
+
+
+
+	(*Energy_IN_HZE_Auffangbecken_L1 AT%I*:INT;
+	Energy_IN_HZE_Auffangbecken_L2 AT%I*:INT;
+	Energy_IN_HZE_Auffangbecken_L3 AT%I*:INT;*)
+
+	(*
+	Energy_IN_HEAT_Reg_1 AT%I*:INT;
+	Energy_IN_HEAT_Reg_2 AT%I*:INT;
+	Energy_IN_HEAT_Reg_3 AT%I*:INT;
+	Energy_IN_HEAT_Reg_4 AT%I*:INT;
+	Energy_IN_Compressor_L1 AT%I*:INT;
+	Energy_IN_Compressor_L2 AT%I*:INT;
+	Energy_IN_Compressor_L3 AT%I*:INT;
+	Energy_IN_SteamFan_L1 AT%I*:INT;
+	Energy_IN_SteamFan_L2 AT%I*:INT;
+	Energy_IN_SteamFan_L3 AT%I*:INT;
+	Energy_IN_Fan_L1 AT%I*:INT;
+	Energy_IN_Fan_L2 AT%I*:INT;
+	Energy_IN_Fan_L3 AT%I*:INT;
+	Energy_IN_Complete_L1 AT%I*:INT;
+	Energy_IN_Complete_L2 AT%I*:INT;
+	Energy_IN_Complete_L3 AT%I*:INT;*)
+
+	
+	
+	
+
+	Energy_OUT_HZE_Auffangbecken_L1:REAL;
+	Energy_OUT_HZE_Auffangbecken_L2:REAL;
+	Energy_OUT_HZE_Auffangbecken_L3:REAL;
+
+	Energy_OUT_HEAT_Reg_1:REAL;
+	Energy_OUT_HEAT_Reg_2:REAL;
+	Energy_OUT_HEAT_Reg_3:REAL;
+	Energy_OUT_HEAT_Reg_4:REAL;
+	Energy_OUT_HEAT_Reg_5:REAL;
+	Energy_OUT_HEAT_Reg_6:REAL;
+	Energy_OUT_HEAT_Reg_7:REAL;
+	Energy_OUT_HEAT_Reg_8:REAL;
+
+
+
+
+
+	Energy_OUT_Compressor_L1 :REAL;
+	Energy_OUT_Compressor_L2 :REAL;
+	Energy_OUT_Compressor_L3 :REAL;
+	Energy_OUT_SteamFan_L1 :REAL;
+	Energy_OUT_SteamFan_L2 :REAL;
+	Energy_OUT_SteamFan_L3 :REAL;
+	Energy_OUT_Fan_L1:REAL;
+	Energy_OUT_Fan_L2 :REAL;
+	Energy_OUT_Fan_L3:REAL;
+	Energy_OUT_Complete_L1 :REAL;
+	Energy_OUT_Complete_L2 :REAL;
+	Energy_OUT_Complete_L3 :REAL;
+	
+	Energy_OUT_SteamGen1 :REAL;
+	Energy_OUT_SteamGen2 :REAL;
+	Energy_OUT_SteamGen3 :REAL;
+
+
+
+
+
+(*_________Frequence_Converter_Groups and controls*)
+
+	Compressor_ON AT%Q* : BOOL;
+	Compressor_Switch_ON AT%Q* : BOOL;
+	Compressor_OK AT%I* : BOOL;
+	Compressor_Circuit_breaker AT%I* : BOOL;
+	Compressor_Setpoint_OUT AT%Q* : INT;
+	Setpoint_Compressor_IN: INT;
+	Setpoint_Compressor_Auto: INT;
+	Setpoint_Compressor_Visu: INT;
+	Compressor_Actual_Turn_IN AT%I* : INT;
+	Compressor_Actual_Turn: REAL;
+	Limit_Temp_Compressor: INT:=100;
+	Temp_compressor_OK: BOOL;
+	T_Ueberwachung_scroll_comp  : INT;
+
+
+	Compressor_cooling  : BOOL;
+	Compressor_cooling_manu  : BOOL;
+	Compressor_cooling_auto : BOOL;
+	Compressor_Switch_ON_Manu: BOOL;
+	Compressor_ON_Manu: BOOL;
+	Compressor_PT100_value AT%I* : INT;
+	Compressor_PT100_error AT%I* : BOOL;
+
+
+
+
+
+
+	(*
+	PRIMAER_Comp_ON AT%Q* : BOOL;
+	PRIMAER_Comp_OK AT%I* : BOOL;
+	PRIMAER_Comp_Setpoint_OUT AT%Q* : INT;
+	Setpoint_PRIMAER_Comp_IN: INT;
+	Setpoint_PRIMAER_Comp_Auto: INT;
+	Setpoint_PRIMAER_Comp_Visu: INT;
+	PRIMAER_Comp_Actual_Turn_IN AT%I* : INT;
+	PRIMAER_Comp_Actual_Turn: REAL;
+	Temp_PRIMAER_Comp_OK: BOOL;
+	PRIMAER_Comp_Switch_ON_Manu: BOOL;
+	PRIMAER_Comp_ON_Manu: BOOL;
+	*)
+
+
+
+	Fan_ON  : BOOL;
+	Fan_OK  : BOOL;
+	Setpoint_Fan_Auto: INT;
+	Setpoint_Fan_Visu: INT;
+	Setpoint_Fan_OUT  : INT;
+	Setpoint_Fan_IN: INT;
+	Fan_Actual_Turn_IN  : INT;
+	Fan_Actual_Turn  : REAL;
+	FAN_Switch_ON  : BOOL;
+	FAN_Switch_ON_Manu: BOOL;
+	FAN_ON_Manu: BOOL;
+
+
+
+	SteamFan_ON AT%Q* : BOOL;
+	SteamFan_OK :BOOL ;(* Zurzeit nicht einlesbar AT%I* : BOOL;*)
+	Setpoint_SteamFan_Auto: INT;
+	Setpoint_SteamFan_Visu: INT;
+	Setpoint_SteamFan_OUT AT%Q* : INT;
+	Setpoint_SteamFan_IN: INT;
+	SteamFan_Actual_Turn_IN AT%I* : INT;
+	SteamFan_Actual_Turn  : REAL;
+	SteamFAN_Switch_ON AT%Q* : BOOL;
+	SteamFAN_Switch_ON_manu:BOOL;
+	SteamFan_ON_manu:BOOL;
+	Setpoint_SteamFan_manu:INT;
+	SteamFan_PTC_IN AT%I* : BOOL;
+	SteamFan_PTC_Error AT%I* : BOOL;
+
+
+
+	Belts_ON_TOP AT%Q* : BOOL;
+	Belts_OK_TOP AT%I* : BOOL;
+	//Setpoint_M_Belts_Auto: INT;
+	Setpoint_Belts_Visu_TOP: REAL;
+	Setpoint_Belts_TOP_OUT AT%Q* : INT;
+	Setpoint_Belts_TOP_IN: INT;
+	Belts_TOP_Actual_Turn_IN AT%I* : INT;
+	Belts_TOP_Actual_Turn  : REAL;
+	Belts_TOP_Switch_ON AT%Q* : BOOL;
+	Belts_TOP_Switch_ON_Manu: BOOL;
+	Belts_ON_TOP_Manu AT%Q* : BOOL;
+	Activate_controller_Belts_TOP:BOOL;
+	fStellwert_Belts_TOP:REAL;
+	
+	
+	
+	
+	
+	Belts_bottom_ON AT%Q* : BOOL;
+	Belts_bottom_OK AT%I* : BOOL;
+	Setpoint_Belts_bottom_OUT AT%Q* : INT;
+	Setpoint_Belts_bottom_IN: INT;
+	Belts_bottom_Actual_Turn_IN AT%I* : INT;
+	Belts_bottom_Actual_Turn  : REAL;
+	Belts_bottom_Switch_ON AT%Q* : BOOL;
+	Setpoint_Belts_Visu_bottom: REAL;
+	Belts_bottom_Switch_ON_Manu: BOOL;
+	Belts_ON_bottom_Manu AT%Q* : BOOL;
+	Activate_controller_Belts_bottom:BOOL;
+	fStellwert_Belts_bottom:REAL;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+	M_Belt_Feeder_ON AT%Q* : BOOL;
+	M_Belt_Feeder_OK AT%I* : BOOL;
+	Setpoint_M_Belt_Feeder_Auto: INT;
+	Setpoint_M_Belt_Feeder_Visu: REAL;
+	Setpoint_M_Belt_Feeder_OUT AT%Q* : INT;
+	Setpoint_M_Belt_Feeder_IN: INT;
+	M_Belt_Feeder_Actual_Turn_IN AT%I* : INT;
+	M_Belt_Feeder_Actual_Turn  : REAL;
+	M_Belt_Feeder_Switch_ON AT%Q* : BOOL;
+	M_Belt_Feeder_Switch_ON_Manu: BOOL;
+	M_Belt_Feeder_ON_Manu AT%Q* : BOOL;
+	Activate_controller_M_Belt_Feeder:BOOL;
+	fStellwert_M_Belt_Feeder:REAL;
+
+
+	Steamgenerator : BOOL;
+	Steamgenerator_manu: BOOL;
+	Steamgenerator_auto: BOOL;
+
+
+
+(*_________Frequence_Converter_Groups AND controls*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	(*OUT_______BOOL____________*)
+
+
+
+	
+
+	V_Dampf_nach_Komp  AT%Q* : BOOL ;
+	V_Dampf_nach_Komp_negiert  AT%Q* : BOOL;
+	V_Nach_WT  AT%Q* : BOOL;
+	V_Entlueftung_1 AT%Q* : BOOL;
+	V_Entlueftung_2 AT%Q* : BOOL;
+	V_Global_Res_3 AT%Q* : BOOL;
+	V_Global_Res_4 AT%Q* : BOOL;
+	V_Global_Res_5 AT%Q* : BOOL;
+
+
+
+
+	Heizelement_Auffangbecken_Mainswitch: BOOL;
+
+
+
+	Heat_matt_Group1_1_4 :BOOL;
+	Heat_matt_Group2_5_8 :BOOL;
+	Heat_matt_Group3_9_10: BOOL;
+
+	Heat_matt1 : BOOL;
+	Heat_matt2 : BOOL;
+	Heat_matt3 : BOOL;
+	Heat_matt4 : BOOL;
+	Heat_matt5 : BOOL;
+	Heat_matt6 : BOOL;
+	Heat_matt7 : BOOL;
+	Heat_matt8 : BOOL;
+	Heat_matt9 : BOOL;
+	Heat_matt10 : BOOL;
+
+
+	Heat_Matt1_OK_for_heat:BOOL;
+	Heat_Matt2_OK_for_heat:BOOL;
+	Heat_Matt3_OK_for_heat:BOOL;
+	Heat_Matt4_OK_for_heat:BOOL;
+	Heat_Matt5_OK_for_heat:BOOL;
+	Heat_Matt6_OK_for_heat:BOOL;
+	Heat_Matt7_OK_for_heat:BOOL;
+	Heat_Matt8_OK_for_heat:BOOL;
+	Heat_Matt9_OK_for_heat:BOOL;
+	Heat_Matt10_OK_for_heat:BOOL;
+	Heat_Matt11_OK_for_heat: BOOL;
+
+
+
+
+	HEAT_Reg_Mainswitch_OUT : BOOL;
+
+
+	HEAT_Reg_1_OUT AT%Q* : BOOL;
+	HEAT_Reg_2_OUT AT%Q* : BOOL;
+	HEAT_Reg_3_OUT AT%Q* : BOOL;
+	HEAT_Reg_4_OUT AT%Q* : BOOL;
+	HEAT_Reg_5_OUT AT%Q* : BOOL;
+	HEAT_Reg_6_OUT AT%Q* : BOOL;
+	HEAT_Reg_7_OUT AT%Q* : BOOL;
+	HEAT_Reg_8_OUT AT%Q* : BOOL;
+
+
+
+
+
+
+	V_Nach_WT_negiert: BOOL;
+	V_Wasserauslass_negiert: BOOL;
+	V_Entlueftung_1_negiert: BOOL;
+	V_Global_Res_5_negiert: BOOL;
+	V_Global_Res_4_negiert: BOOL;
+	V_Global_Res_3_negiert: BOOL;
+	V_Entlueftung_2_negiert: BOOL;
+
+
+
+
+
+
+
+	(*AUTO_____________BOOL_____________*)
+
+
+
+
+	(*neuere Aktoren von MS2*)
+
+	V_Dampf_nach_Komp_auto : BOOL:=FALSE;
+	V_Nach_WT_auto:BOOL:=FALSE;
+	V_Entlueftung_1_auto : BOOL;
+	V_Entlueftung_2_auto : BOOL:=FALSE;
+	V_Global_Res_3_auto : BOOL:=FALSE;
+	V_Global_Res_4_auto : BOOL:=FALSE;
+	V_Global_Res_5_auto : BOOL;
+
+
+
+	Heat_matt1_auto: BOOL;
+	Heat_matt2_auto: BOOL;
+	Heat_matt3_auto: BOOL;
+	Heat_matt4_auto: BOOL;
+	Heat_matt5_auto: BOOL;
+	Heat_matt6_auto: BOOL;
+	Heat_matt8_auto: BOOL;
+	Heat_matt7_auto:BOOL;
+	Heat_matt9_auto: BOOL;
+	Heat_matt10_auto: BOOL;
+
+	Heat_matt_Group1_1_4_auto: BOOL;
+	Heat_matt_Group2_5_8_auto: BOOL;
+	Heat_matt_Group3_9_10_auto: BOOL;
+
+
+	HEAT_Reg_Mainswitch_Auto:BOOL;
+
+	HEAT_Reg_1_Auto: BOOL;
+	HEAT_Reg_2_Auto: BOOL;
+	HEAT_Reg_3_Auto: BOOL;
+	HEAT_Reg_4_Auto: BOOL;
+	HEAT_Reg_5_Auto: BOOL;
+	HEAT_Reg_6_Auto: BOOL;
+	HEAT_Reg_7_Auto: BOOL;
+	HEAT_Reg_8_Auto: BOOL;
+
+
+
+
+
+
+
+	(*MANU____________BOOL___________*)
+
+
+	(*neuere Aktoren von MS2*)
+
+
+	V_Dampf_nach_Komp_manu : BOOL:=FALSE;
+	V_Nach_WT_manu : BOOL:=FALSE;
+	V_Entlueftung_1_manu : BOOL:=FALSE;
+	V_Entlueftung_2_manu : BOOL;
+	V_Global_Res_3_manu : BOOL;
+	V_Global_Res_4_manu: BOOL:=FALSE;
+	V_Global_Res_5_manu : BOOL;
+
+
+
+
+	Heat_matt1_manu: BOOL;
+	Heat_matt2_manu: BOOL;
+	Heat_matt3_manu: BOOL;
+	Heat_matt4_manu: BOOL;
+	Heat_matt5_manu: BOOL;
+	Heat_matt6_manu: BOOL;
+	Heat_matt7_manu: BOOL;
+	Heat_matt8_manu: BOOL;
+	Heat_matt9_manu: BOOL;
+	Heat_matt10_manu: BOOL;
+
+
+
+	HEAT_Reg_Mainswitch_Manu:BOOL;
+
+
+	HEAT_Reg_1_Manu: BOOL;
+	HEAT_Reg_2_Manu: BOOL;
+	HEAT_Reg_3_Manu: BOOL;
+	HEAT_Reg_4_Manu: BOOL;
+	HEAT_Reg_5_Manu: BOOL;
+	HEAT_Reg_6_Manu: BOOL;
+	HEAT_Reg_7_Manu: BOOL;
+	HEAT_Reg_8_Manu: BOOL;
+
+
+
+	
+	MAIN_ON_Switch_Light_visu:BOOL;
+	MAIN_ON_Switch_Light1 AT%Q* : BOOL;
+	MAIN_ON_Switch_Light2 AT%Q* : BOOL;
+	
+	
+	MAIN_ON_STEAM_GEN AT%Q* : BOOL;
+	
+	
+	
+
+
+(*________________________________________________________________ENDE_MANU_Vars________________________________*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	V_Entlueftung_1_Reset:BOOL;
+	V_Entlueftung_2_Reset:BOOL;
+	V_Global_Res_3_Reset:BOOL;
+	V_Global_Res_4_Reset:BOOL;
+	V_Global_Res_5_Reset:BOOL;
+	V_Dampf_nach_Komp_Reset:BOOL;
+	V_Nach_WT_Reset:BOOL;
+
+
+	V_Entlueftung_1_String:STRING;
+	V_Entlueftung_2_String:STRING;
+	V_Global_Res_3_String:STRING;
+	V_Global_Res_4_String:STRING;
+	V_Global_Res_5_String:STRING;
+	V_Dampf_nach_Komp_String:STRING;
+	V_NACH_WT_String:STRING;
+
+
+	V_Entlueftung_1_Reset_Sequence:BOOL;
+	V_Entlueftung_2_Reset_Sequence:BOOL;
+	V_Global_Res_3_Reset_Sequence:BOOL;
+	V_Global_Res_4_Reset_Sequence:BOOL;
+	V_Global_Res_5_Reset_Sequence:BOOL;
+	V_Dampf_nach_Komp_Reset_Sequence:BOOL;
+	V_NACH_WT_Reset_Sequence:BOOL;
+
+
+	V_Entlueftung_1_Sequence:BOOL;
+	V_Entlueftung_2_Sequence:BOOL;
+	V_Global_Res_3_Sequence:BOOL;
+	V_Global_Res_4_Sequence:BOOL;
+	V_Global_Res_5_Sequence:BOOL;
+	V_Dampf_nach_Komp_Sequence:BOOL;
+	V_NACH_WT_Sequence:BOOL;
+
+
+
+	VE_K2_71:BOOL;
+	VE_K2_73:BOOL;
+
+
+
+
+
+
+
+
+
+
+
+	LED_RED_OUT AT%Q* :BOOL;
+	LED_RED_VISU: BOOL;
+	LED_RED_auto: BOOL;
+
+	LED_green_OUT AT%Q* :BOOL;
+	LED_green_VISU: BOOL;
+	LED_green_auto: BOOL;
+
+	LED_yellow_OUT AT%Q* :BOOL;
+	LED_yellow_VISU: BOOL;
+	LED_yellow_auto: BOOL;
+
+	LED_white_OUT AT%Q* :BOOL;
+	LED_white_VISU: BOOL;
+	LED_white_auto: BOOL;
+
+
+	All_Heater_on_auto:BOOL;
+
+
+
+
+
+
+
+
+
+
+
+
+
+	Control_Manu: BOOL;
+	Control_Manu_active: BOOL;
+	Reset_man: BOOL;
+	Control_Auto: BOOL;
+	Control_Auto_active: BOOL;
+	Reset_auto: BOOL;
+
+
+	Control_ADS: BOOL;
+	ADS_active: BOOL;
+	Reset_ADS: BOOL;
+	Control_DES: BOOL;
+	DES_active: BOOL;
+	Reset_DES: BOOL;
+
+
+
+
+	P_Cabinet_Underlimit: INT:=700;	(*mbar*)
+
+
+
+
+
+
+
+	(*Reglerbausteine für PWM Ausgänge*)
+
+
+	(*Parameter*)
+
+	//Als Testzweck draussen
+	(*stParams: ST_CTRL_2POINT_PWM_ADAPTIVE_PARAMS;
+	Heat_REG1_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_REG2_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_REG3_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_REG4_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_REG5_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_REG6_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_REG7_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_REG8_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;*)
+
+
+
+	
+	
+	
+	(*Heat_EinschraubHZK1_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_EinschraubHZK2_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_EinschraubHZK3_CTRL_PWM:FB_CTRL_2POINT_PWM_ADAPTIVE;
+	Heat_REG_Comp:FB_CTRL_2POINT_PWM_ADAPTIVE;*)
+
+
+
+	(*INPUTS*)
+
+	fSetpointValue1			:REAL:=20;	(*Heizregister 1-4 zurzeit alls Gruppe (oben) *)
+	fSetpointValue2			:REAL:=20;	(*Heizregister 5-8 zurzeit alls Gruppe (oben) *)
+
+	fSetpointValue3			:REAL:=20;
+	fSetpointValue4			:REAL:=20;
+
+	fSetpointValue5			:REAL:=20;	(* Setpoints 5-7 waren ehemals EInschraubheizkörper*)
+	fSetpointValue6			:REAL:=20;
+	fSetpointValue7			:REAL:=20;
+
+	fSetpointValue8			:REAL:=20;
+
+
+	
+	//Als Testzweck draussen
+	(*
+	fManSyncValue			:FLOAT;					(* input value for the manual mode or the sync request *)
+	bSync					: BOOL;							(* rising edge set the output to the fManSyncValue *)
+	eMode					: E_CTRL_MODE;					(* sets the mode of the function block *)
+	bHold					: BOOL;							(* hold the internal integrator *)
+
+	eState				: E_CTRL_STATE;
+	eErrorId				: E_CTRL_ERRORCODES;		(* error code *)
+	bError				: BOOL;*)
+	
+	
+	
+
+
+	(*OUTPUTS*)
+
+	fPWMDutyCycle1		:FLOAT;					(* fOut reached the max or min limit *)
+	fPWMDutyCycle2		:FLOAT;				(* fOut reached the max or min limit *)
+	fPWMDutyCycle3		:FLOAT;						(* fOut reached the max or min limit *)
+	fPWMDutyCycle4		:FLOAT;
+	fPWMDutyCycle5		:FLOAT;
+	fPWMDutyCycle6		:FLOAT;
+	fPWMDutyCycle7		:FLOAT;
+	fPWMDutyCycle8		:FLOAT;
+
+
+
+
+
+
+
+
+
+
+
+	bManuHeat_REG1_CTRL: BOOL;
+	bAuto_Heat_REG1_CTRL: BOOL;
+	bManuHeat_REG2_CTRL: BOOL;
+	bAuto_Heat_REG2_CTRL: BOOL;
+	bManuHeat_REG3_CTRL: BOOL;
+	bAuto_Heat_REG3_CTRL: BOOL;
+	bManuHeat_REG4_CTRL: BOOL;
+	bAuto_Heat_REG4_CTRL: BOOL;
+
+	bManuHeat_REG5_CTRL: BOOL;
+	bAuto_Heat_REG5_CTRL: BOOL;
+	bManuHeat_REG6_CTRL: BOOL;
+	bAuto_Heat_REG6_CTRL: BOOL;
+	bManuHeat_REG7_CTRL: BOOL;
+	bAuto_Heat_REG7_CTRL: BOOL;
+	bManuHeat_REG8_CTRL: BOOL;
+	bAuto_Heat_REG8_CTRL: BOOL;
+
+	T_Limit_Heatreg_top: REAL:=200.0;
+	T_Limit_Heatreg_bottom: REAL:=200.0;
+
+
+
+
+
+
+
+
+
+	(*bManu_Heat_EinschraubHZK1_CTRL: BOOL;
+	bAuto_Heat_EinschraubHZK1_CTRL: BOOL;
+	bManu_Heat_EinschraubHZK2_CTRL: BOOL;
+	bAuto_Heat_EinschraubHZK2_CTRL: BOOL;
+	bManu_Heat_EinschraubHZK3_CTRL: BOOL;
+	bAuto_Heat_EinschraubHZK3_CTRL: BOOL;
+	bManu_Heat_REG_Comp: BOOL;
+	bAuto_Heat_REG_Comp: BOOL;*)
+
+
+	 Ctr_Manu: BOOL;
+	 Ctr_Auto: BOOL;
+	 Ctr_Reset: BOOL;
+
+
+	 Ctr_Manu_active: BOOL;
+	 Ctr_Auto_active: BOOL;
+	 Ctr_Reset_active: BOOL;
+
+
+
+	OKRange_Ctrl:FLOAT:=2; (*%*)
+
+	Step_Size_Ctr_PWM:FLOAT:=5;	(*%*)
+
+	Force_Range_ON: FLOAT:=5;	(*Celcius*)
+
+
+(*Bis Hier ControlParameter*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	(*Modbus Server Variables*)
+
+	ipAddr 			:	STRING(15) :='192.168.100.66';	(*Pokeys*)
+	(*M0 AT%MB0		:	ARRAY [0..3] OF WORD;*)
+	nValue			: 	ARRAY [0..6] OF WORD ;
+	bWriteRegs		:  	BOOL;
+	PWM_duty_cycle: UINT;
+	nTCPPort 		: UINT:= 503;
+	nUnitID 		: BYTE:=16#FF;
+	bBUSY 		: BOOL;
+	bbError 		: BOOL;
+	nErrId 		: UDINT;
+
+
+
+
+
+	XY: INT;
+	 C_val1:WORD;
+	Valve_YB9: BOOL;
+	Valve_YB10: BOOL;
+	Valvematrix2: BYTE;
+
+
+	Reset_Sequence: BOOL;
+
+
+	Hyst_low_LIM_Heatmatt: INT:=120;
+	Hyst_high_LIM_Heatmatt: INT:=140;
+	Case_Schritt: INT;
+
+	Start_Puls_Valves: BOOL;
+	Start_Puls_Valves_out: BOOL;
+
+
+
+	(*____GUEST VAR___________*)
+
+
+
+
+
+
+
+	(*____GUEST VAR___________*)
+
+
+
+
+	Poti_Istwert_NV: REAL;
+	High_Limit_Poti_Istwert_NV: REAL;
+	Low_Limit_Poti_Istwert_NV: REAL;
+
+
+	P_Saetigung: REAL;
+	T_Saetigung: REAL;
+
+	Ps_311: REAL;
+	Ps_26: REAL;
+	Ps_28: REAL;
+	Ps_23: REAL;
+
+	RelP_TM: REAL;
+	RelP_TM2: REAL;
+	RelP_WT: REAL;
+	RelP_Out: REAL;
+
+	testvar: REAL;
+	Konstant1: REAL:=2;
+	nErrorStatus_comp: UINT;
+	nErrorStatus_NV: UINT;
+	
+	
+	fKP_Controller_Heatmatt1: REAL:=100;
+	fKI_Controller_Heatmatt1: REAL:=10;
+	nErrorStatus_Heatmatt1: UINT;
+	
+	
+	fKP_Controller_Heatmatt2: REAL:=100;
+	fKI_Controller_Heatmatt2: REAL:=10;
+	nErrorStatus_Heatmatt2: UINT;
+	
+	
+	fKP_Controller_Heatmatt3: REAL;
+	fKI_Controller_Heatmatt3: REAL;
+	nErrorStatus_Heatmatt3: UINT;
+	
+	
+	fKP_Controller_Heatmatt4: LREAL;
+	fKI_Controller_Heatmatt4: LREAL;
+	nErrorStatus_Heatmatt4: UINT;
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	T_Monitor_Heatreg1: REAL;
+	T_Limit_Heatreg3: REAL:=150;
+	T_Monitor_Heatreg2: REAL;
+	
+	
+	
+	
+	//Für Webbrowser:
+	
+	SurlAdress:STRING:='www.psi.ch';
+	bBack:BOOL;
+	bForward:BOOL;
+	bShow:BOOL;
+	
+	aArray_Histogram:ARRAY[0..100]OF INT;
+	
+	
+	counup_Array: INT;
+	counup_Array_OUT: INT;
+	Istwert_IN_NV_OUT: REAL;
+	fTemp_mean_belt_top: REAL;
+	fTemp_mean_belt_bottom: REAL;
+	Reset_heatreg_top: BOOL;
+	Reset_heatreg_bottom: BOOL;
+	Reset_heatreg_compressor: BOOL;
+	OK_For_HEAT_WHILE_FAN_IS_ON: BOOL;
+	
+	
+	udiPrd_heatreg1: UDINT:=1;
+	udiMinOnTi_heatreg_1: UDINT:=1;
+	udiPrd_heatreg2: UDINT:=1;
+	udiPrd_heatreg3: UDINT:=1;
+	udiMinOnTi_heatreg_2: UDINT:=1;
+	udiMinOnTi_heatreg_3: UDINT:=1;
+	bManuHeat_REG3_switch_ON: BOOL;
+	bManuHeat_REG2_switch_ON: BOOL;
+	bManuHeat_REG1_switch_ON: BOOL;
+	
+	Setpoint_Belts_Visu_TOP_1_min: REAL:=0.39;
+	Setpoint_Belts_Visu_bottom_1_min: REAL:=0.39;
+	Uebersetzung_Schneckengetriebe: REAL:=900;
+	Setpoint_M_Belts_Feeder_Visu_1_min: REAL;
+	Re_Calibrate_TC: BOOL;
+	
+	
+	
+	TC_calib : ARRAY[1..40] OF REAL;
+	Temp_Array : ARRAY[1..40] OF REAL;
+	
+	
+	SE_T_1_01_Calib:REAL;
+	SE_T_1_02_Calib:REAL;
+	SE_T_1_03_Calib:REAL;
+	SE_T_1_04_Calib:REAL;
+	SE_T_1_05_Calib:REAL;
+	SE_T_1_06_Calib:REAL;
+	SE_T_1_07_Calib:REAL;
+	SE_T_1_08_Calib:REAL;
+	SE_T_1_09_Calib:REAL;
+	SE_T_2_01_Calib:REAL;
+	SE_T_2_02_Calib:REAL;
+	SE_T_2_03_Calib:REAL;
+	SE_T_3_01_Calib:REAL;
+	SE_T_3_02_Calib:REAL;
+	SE_T_3_03_Calib:REAL;
+	SE_T_3_71_Calib:REAL;
+	SE_T_3_72_Calib:REAL;
+	SE_T_3_73_Calib:REAL;
+	SE_T_3_74_Calib:REAL;
+	SE_T_3_75_Calib:REAL;
+	SE_T_3_76_Calib:REAL;
+	SE_T_3_77_Calib:REAL;
+	SE_T_3_78_Calib:REAL;
+	SE_T_1_81_Calib:REAL;
+	SE_T_1_83_Calib:REAL;
+	SE_T_1_91_Calib:REAL;
+	SE_T_1_93_Calib:REAL;
+	SE_T_3_81_Calib:REAL;
+	SE_T_3_82_Calib:REAL;
+	SE_T_3_83_Calib:REAL;
+	SE_T_3_84_Calib:REAL;
+	SE_T_3_51_Calib:REAL;
+	
+	Count: INT;
+	P_Abs_Amb: REAL;
+	P_Abs_Amb_IN AT%I* :INT;
+	P_Abs_Amb_Visu: REAL;
+	Reset_Calib: BOOL;
+	
+	
+	
+	
+	SE_P_1_11_Calib:REAL;
+	SE_P_1_12_Calib:REAL;
+	SE_P_2_11_Calib:REAL;
+	SE_P_2_12_Calib:REAL;
+	SE_P_2_13_Calib:REAL;
+	
+	Set_Calib_preasure:BOOL;
+	Reset_Calib_preasure:BOOL;
+	
+		
+	P_calib : ARRAY[1..10] OF REAL;
+	P_Array : ARRAY[1..10] OF REAL;
+	
+	DO_not_turn_off_Heating_O2_Sensor: BOOL;
+	Setpoint_1_MIN_SteamFan_IN: INT;
+	Setpoint_1_MIN_Compressor_IN: int;
+	switch_Setpoint_Value: BOOL;
+	Switch_ON_Feeder_Belt_PWM: BOOL;
+	Switch_ON_Main_Belt_PWM: BOOL;
+	
+	
+	Feeder_Belt_PWMDutyCycle_VISU:REAL:=50.0;
+	Main_Belt_PWMDutyCycle_VISU:REAL:=50.0;
+	
+	Base_Frequence_Feeder_Belt:REAL:=0.05;	//=100Sekunden somit bei 50% PWM: 50 Sekunden puls, empfohlen nicht grosser als 0.02 somit nicht unter 50HZ
+	Base_Frequence_Main_Belt:REAL:=0.05;
+	
+	Ps_202:REAL;
+	Ps_203:REAL;
+	volFracAir202:REAL;
+	volFracAir203:REAL;
+	volFracAirO2:REAL;
+	
+	
+	
+	Circuit_1_ON AT%Q* :BOOL;
+	Circuit_2_ON AT%Q* :BOOL;
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+END_VAR
+
+
+
+
+//Für UDP Kommunikation
+
+
+VAR_GLOBAL CONSTANT
+	PLCPRJ_BUFFER_SIZE					: UDINT := 1000;(* Max. internal fifo/receiver buffer size *)
+
+	(* Some project specific error codes *)
+	PLCPRJ_ERROR_SENDFIFO_OVERFLOW		: UDINT := 16#8103;
+	PLCPRJ_ERROR_RECFIFO_OVERFLOW		: UDINT := 16#8104;
+END_VAR
+
+
+VAR_GLOBAL RETAIN
+	P_Komp_Auslass_Local: REAL;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

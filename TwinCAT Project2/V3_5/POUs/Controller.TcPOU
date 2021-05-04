@@ -1,0 +1,742 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <POU Name="Controller" Id="{5602670e-8c6b-419c-8b64-48ee72e87b57}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Controller
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	CTRL_1: FB_BasicPID;
+	CTRL_2: FB_BasicPID;
+	
+	Heat_REG1_CTRL: FB_BasicPID;
+	Heat_REG2_CTRL: FB_BasicPID;
+	Heat_REG3_CTRL: FB_BasicPID;
+	Heat_REG4_CTRL: FB_BasicPID;
+	Heat_REG5_CTRL: FB_BasicPID;
+	Heat_REG6_CTRL: FB_BasicPID;
+	Heat_REG7_CTRL: FB_BasicPID;
+	Heat_REG8_CTRL: FB_BasicPID;
+	
+	
+	
+	Heat_REG1_PWM: FB_BA_PWM;
+	Heat_REG2_PWM: FB_BA_PWM;
+	Heat_REG3_PWM: FB_BA_PWM;
+	Heat_REG4_PWM: FB_BA_PWM;
+	Heat_REG5_PWM: FB_BA_PWM;
+	Heat_REG6_PWM: FB_BA_PWM;
+	Heat_REG7_PWM: FB_BA_PWM;
+	Heat_REG8_PWM: FB_BA_PWM;
+	
+	
+	
+	
+	
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+
+
+
+(*Regler Kompressor*)
+
+IF Activate_controller_comp THEN
+
+
+(* Default (zurzeit nicht veränderbar)TN = 1, TV = 1,*)
+
+
+CTRL_1(
+	fSetpointValue:= fSollwert_comp, 
+	fActualValue:=P_Komp_Auslass_Visu , 
+	bReset:=Reset_Controller_comp , 
+	fCtrlCycleTime:= 0.1, 
+	fKp:=fKP_Controller_comp , 
+	fTn:=fKI_Controller_comp , 
+	fTv:=0.1 , 
+	fTd:= 0.1, 
+	fCtrlOutput=>fStellwert_comp , 
+	nErrorStatus=>nErrorStatus_comp );
+(*
+
+VAR_INPUT
+    fSetpointValue : LREAL; (* setpoint value *)
+    fActualValue   : LREAL; (* actual value *)
+    bReset         : BOOL;
+    fCtrlCycleTime : LREAL; (* controller cycle time in seconds [s] *)
+    fKp            : LREAL; (* proportional gain Kp (P) *)
+    fTn            : LREAL; (* integral gain Tn (I) [s] *)
+    fTv            : LREAL; (* derivative gain Tv (D-T1) [s] *)
+    fTd            : LREAL; (* derivative damping time Td (D-T1) [s] *)
+END_VAR
+*)
+
+ELSE
+
+	fSollwert_comp:=0;
+	fManual_controller_comp:=0;
+	Set_Manual_controller_comp:=FALSE;
+	fStellwert_comp:=0;
+
+END_IF;
+
+
+
+
+
+
+
+
+
+
+
+
+(* Regler 3 für Nadelregelventil*)
+
+IF Activate_controller_Needlevalve THEN
+
+CTRL_2(
+	fSetpointValue:= fSollwert_NV, 
+	fActualValue:=fRegelgroesse_NV , 
+	bReset:=Reset_Controller_NV , 
+	fCtrlCycleTime:= 0.1, 
+	fKp:=fKP_Controller_NV , 
+	fTn:=fKI_Controller_NV , 
+	fTv:=0.1 , 
+	fTd:= 0.1, 
+	fCtrlOutput=>fStellwert_NV , 
+	nErrorStatus=>nErrorStatus_NV );
+	
+	
+(*
+CTRL_3(
+	ACT:=fRegelgroesse_NV,
+	SET:=fSollwert_NV ,
+	SUP:=0.0 ,
+	OFS:= 0.0,
+	M_I:= fManual_controller_NV,
+	MAN:=Set_Manual_controller_NV,
+	RST:= Reset_Controller_NV,
+	KP:=fKP_Controller_NV,
+	KI:=fKI_Controller_NV,
+	LL:=0.0,
+	LH:=32767 ,
+	Y=>fStellwert_NV,
+	DIFF=> ,
+	LIM=> );
+*)
+
+ELSE
+
+
+	fSollwert_NV:=0;
+	 fManual_controller_NV:=0;
+	Set_Manual_controller_NV:=FALSE;
+	fStellwert_NV:=0;
+	
+
+END_IF;
+
+
+
+(*Wenn Poti-Grenze Überschritten wird, wird Sollwert auf 0 gesetzt*)
+IF Poti_Istwert_NV > High_Limit_Poti_Istwert_NV OR
+Poti_Istwert_NV < Low_Limit_Poti_Istwert_NV THEN
+Sollwert_OUT_NV:=0;
+ELSE
+Sollwert_OUT_NV:=REAL_TO_INT(fStellwert_NV);
+END_IF;
+
+
+Poti_Istwert_NV:=REAL_TO_INT(Istwert_IN_NV*100 )/32767;
+
+
+
+
+
+
+(*Erklärung PID regler gemäss LIB BA*)
+
+(*
+
+bEn         : BOOL;
+bActn       : BOOL;
+bSync       : BOOL;
+lrSync      : LREAL;
+lrW         : LREAL;
+lrX         : LREAL;
+lrNZ        : LREAL;
+lrYMin      : LREAL;
+lrYMax      : LREAL;
+lrKp        : LREAL;
+udiTn       : UDINT;
+udiTv       : UDINT;
+udiTd       : UDINT;
+udiMinToMax : UDINT;
+udiMaxToMin : UDINT;
+uiCycCl     : UINT;
+
+bEn: Regleraktivierung.
+
+bActn:Wirksinn des Reglers.
+
+bSync / lrSync: Synchronisationsbefehl: Ausgangswert lrY auf lrSync setzen.
+
+lrW: Sollwert.
+
+lrX: Istwert.
+
+lrNZ: neutrale Zone.
+
+lrYMin: Untere Ausgabebegrenzung des Reglers.
+
+lrYMax: Obere Ausgabebegrenzung des Reglers.
+
+lrKp: Reglerverstärkung. Wirkt nur auf den P-Anteil.
+
+udiTn: Nachstellzeit des I-Anteiles [ms] . Ein Nullwert an diesem Parameter schaltet den I-Anteil ab.
+
+udiTv: Vorhaltezeit des D-Anteiles [ms] . Ein Nullwert an diesem Parameter schaltet den D-Anteil ab.
+
+udiTd: Dämpfungszeit des D-Anteiles [ms] .
+
+udiMinToMax: Steigungsbegrenzung des Reglerausgangs für Anstieg: udiMinToMax [s] bezogen auf eine Änderung von lrYMin auf lrYMax.
+
+udiMaxToMin: Steigungsbegrenzung des Reglerausgangs für Abfall: udiMaxToMin [s] bezogen auf eine Änderung von lrYMax auf lrYMin.
+
+uiCycCl: Aufrufzyklus des Bausteines als Vielfaches der Zykluszeit. Ein Nulleintrag wird automatisch als uiCycleCall=1 gewertet.
+Beispiel: tTaskCycleTime = 20ms, uiCtrlCycleCall =10 -> Der Regelalgorithmus wird alle 200ms aufgerufen. Damit werden aber auch nur alle 200ms die Ausgänge aktualisiert.
+VAR_OUTPUT
+
+lrY        : LREAL;
+lrE        : LREAL;
+bAct       : BOOL;
+b2PtAct    : BOOL;
+bARW       : BOOL;
+bMinLim    : BOOL;
+bMaxLim    : BOOL;
+bDecLim    : BOOL;
+bIncLim    : BOOL;
+bErr       : BOOL;
+udiErrId   : UDINT;
+udiErrArg  : UDINT;
+
+lrY: Stellgröße. Bereich durch lrYMin und lrYMax eingeschränkt.
+
+lrE: Regelabweichung (Die Berechnung ist abhängig vom Wirksinn).
+
+bAct: Der Regler ist aktiv, das heißt freigegeben (bEn = TRUE) und nicht im Fehlerzustand (bErr = FALSE).
+
+bARW: Anti-Reset-Windup-Funktion ist aktiv.
+
+b2PtAct: wird nicht mehr benötigt.
+
+bMaxLim: Die Stellgröße hat ihren oberen Grenzwert erreicht.
+
+bMinLim: Die Stellgröße hat ihren unteren Grenzwert erreicht.
+
+bDecLim: Die Stellgrößen-Steigung hat ihren Grenzwert für das maximale Abfallen erreicht, siehe udiMaxToMin (VAR_INPUT).
+
+bIncLim: Die Stellgrößen-Steigung hat ihren Grenzwert für den maximale Anstieg erreicht, siehe udiMinToMax (VAR_INPUT).
+
+bErr: Dieser Ausgang wird auf TRUE geschaltet, wenn die eingetragenen Parameter fehlerhaft sind.
+
+udiErrId / udiErrArg: Enthält die Fehlernummer und das Fehlerargument. Siehe Fehlercodes.
+*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*PWM Erklärung:
+
+FB_BA_PWM
+
+Puls-Weiten-Modulations-Baustein.
+
+FB_BA_PWM 1:
+Funktionsbeschreibung
+
+Der Funktionsbaustein errechnet aus einem analogen Eingangssignal rIn (0..100%, intern fest begrenzt) und einer Periodendauer udiPrd [s] eine Ein- und eine Ausschaltzeit, welche an den Ausgängen als rActTiOn und rActTiOff  in Sekunden angezeigt werden.
+
+Dabei entspricht:
+
+    100% am Eingang einer Einschaltzeit von der gesamten Periodendauer udiPrd und einer Ausschaltzeit von 0s
+    0% am Eingang einer Einschaltzeit von 0s und einer Ausschaltzeit von der gesamten Periodendauer udiPrd.
+
+Darüber hinaus gibt es die Möglichkeit über udiMinOnTi [s] die Einschaltdauer nach unten hin zu begrenzen, um Schäden an Antrieben durch zu kurze Stellimpulse zu vermeiden. Dieses Verhalten gilt gilt jedoch nur für 0>rIn>100!
+Für die Eingangssignale:
+
+     rIn=0: Einschaltzeit=0, Ausschaltzeit=udiPrd -> bOut bleibt dauerhaft FALSE
+    rIn=100: Einschaltzeit=udiPrd , Ausschaltzeit=0 -> bOut bleibt dauerhaft TRUE
+
+Schaltverhalten
+
+    Ein FALSE-Signal am Eingang bEn setzt den Baustein außer Funktion und bQ auf FALSE. Es werden lediglich die Ein-und Ausschaltzeiten kontinuierlich berechnet und an den Ausgängen rActTiOn und rActTiOff [s] angezeigt.
+    Eine steigende Flanke am Eingang bEn aktiviert den Baustein: Er springt zunächst in einen Entscheidungs-Schritt. Je nach vorherigem Zustand vom Schaltausgang bQ wird nun in den umschaltenden Schritt gesprungen, es sei denn, der Eingang rIn steht auf 0.0. Dann erfolgt ein Sprung in den Aus-Schritt (bQ=FALSE).
+    In dem jeweils aktiven Schritt (EIN oder AUS) läuft nun ein Countdown-Timer mit dem aktuell errechneten Startwert ab, der sich aus dem Puls-Pause-Verhältnis ergibt. Der Ein- bzw. Aus-Schritt wird mit der errechneten Zeit durchlaufen, egal, ob sich währenddessen das Puls-Pause-Verhältnis ändert. Der jeweilige Countdown wird an den Ausgängen udiRemTiOn und udiRemTiOff in vollen Sekunden angezeigt.
+    Nach Ablauf des Ein- bzw. des Aus-Schrittes erfolgt ein Rücksprung in den Entscheidungsschritt (Punkt 2).
+
+Ein-Ausgänge
+VAR_INPUT
+
+bEn        : BOOL;
+rIn        : REAL;
+udiPrd     : UDINT;
+udiMinOnTi : UDINT;
+
+bEn : Aktivierung der Puls-Weiten-Modulation.
+
+rIn: Eingangssignal, intern auf 0..100% fest begrenzt.
+
+udiPrd: Periodenzeit [s].
+
+udiMinOnTi: Minimale Einschaltzeit [s].
+VAR_OUTPUT
+
+bOut        : BOOL;
+bLmtSwiTi          : BOOL;
+rActTiOn    : REAL;
+rActTiOff   : REAL;
+udiRemOnTi  : UDINT;
+udiRemOffTi : UDINT;
+
+bOut: PWM-Ausgang.
+
+bLmtSwiTi: Informationsausgang, dass das Eingangssignal so niedrig ist, dass mit der minimalen Einschaltzeit begrenzt wird.
+
+rActTiOn: Informationsausgang: errechnete Einschaltzeit.
+
+rActTiOff: Informationsausgang: errechnete Ausschaltzeit.
+
+udiRemOnTi: Countdown Einschalttimer.
+
+udiRemOffTi: Countdown Ausschalttimer.
+
+
+*)
+
+
+
+
+
+(*PID_test(
+	bEn:= , 
+	bActn:= , 
+	bSync:= , 
+	lrSync:= , 
+	lrW:= , 
+	lrX:= , 
+	lrNz:= , 
+	lrYMin:= , 
+	lrYMax:= , 
+	lrKp:= , 
+	udiTn:= , 
+	udiTv:= , 
+	udiTd:= , 
+	udiMinToMax:= , 
+	udiMaxToMin:= , 
+	uiCycCl:= , 
+	lrY=> , 
+	lrE=> , 
+	bAct=> , 
+	b2PtAct=> , 
+	bARW=> , 
+	bMinLim=> , 
+	bMaxLim=> , 
+	bDecLim=> , 
+	bIncLim=> , 
+	bErr=> , 
+	udiErrId=> , 
+	udiErrArg=> );*)
+
+	
+	
+//Verknüpfung = PID Regler => PWM => OUTPUT
+	
+//Heizregister Gruppe 1 oben 1-4
+
+Heat_REG1_CTRL(
+	fSetpointValue:= fSetpointValue1, 
+	fActualValue:=fTemp_mean_belt_top, 
+	bReset:=Reset_heatreg_top, 
+	fCtrlCycleTime:= 0.1, 
+	fKp:=fKP_Controller_Heatmatt1 , 
+	fTn:=fKI_Controller_Heatmatt1 , 
+	fTv:=0.1 , 
+	fTd:= 0.1, 
+	fCtrlOutput=>fPWMDutyCycle1, 
+	nErrorStatus=>nErrorStatus_Heatmatt1 );
+	
+	//
+	
+	Heat_REG1_PWM(
+	bEn:=TRUE , 
+	rIn:= fPWMDutyCycle1	, 
+	udiPrd:=2, //2 =sekunde
+	udiMinOnTi:=1 , //1 =sekunde
+	bQ=>bAuto_Heat_REG1_CTRL, 
+	bLmtMinOnTi=> , 
+	rActTiOn=> , 
+	rActTiOff=> , 
+	udiRemTiOn=> , 
+	udiRemTiOff=> );
+	
+	
+	
+	
+	
+	
+	
+	
+	//Heizregister Gruppe 2 unten 5-8
+
+	
+	Heat_REG2_CTRL(	
+	fSetpointValue:= fSetpointValue2, 
+	fActualValue:=fTemp_mean_belt_bottom, 
+	bReset:=Reset_heatreg_bottom , 
+	fCtrlCycleTime:= 0.1, 
+	fKp:=fKP_Controller_Heatmatt2 , 
+	fTn:=fKI_Controller_Heatmatt2 , 
+	fTv:=0.1 , 
+	fTd:= 0.1, 
+	fCtrlOutput=>fPWMDutyCycle2, 
+	nErrorStatus=>nErrorStatus_Heatmatt2 );
+
+	Heat_REG2_PWM(
+	bEn:=TRUE , 
+	rIn:= fPWMDutyCycle2	, 
+	udiPrd:=2, //2 =sekunde
+	udiMinOnTi:=1 , //1 =sekunde
+	bQ=>bAuto_Heat_REG2_CTRL, 
+	bLmtMinOnTi=> , 
+	rActTiOn=> , 
+	rActTiOff=> , 
+	udiRemTiOn=> , 
+	udiRemTiOff=> );
+	
+	
+	
+//Heizregister bei Kompressor (verhinderung von Kondensation)
+	
+Heat_REG3_CTRL(	
+	fSetpointValue:= fSetpointValue3, 
+	fActualValue:= Temp_Heatmatt3 , 
+	bReset:= Reset_heatreg_compressor, 
+	fCtrlCycleTime:= 0.1, 
+	fKp:=fKP_Controller_Heatmatt3 , 
+	fTn:=fKI_Controller_Heatmatt3 , 
+	fTv:=0.1 , 
+	fTd:= 0.1, 
+	fCtrlOutput=>fPWMDutyCycle3, 
+	nErrorStatus=>nErrorStatus_Heatmatt3 );
+
+
+	Heat_REG3_PWM(
+	bEn:=TRUE , 
+	rIn:= fPWMDutyCycle3	, 
+	udiPrd:=2, //2 =sekunde
+	udiMinOnTi:=1 , //1 =sekunde
+	bQ=>bAuto_Heat_REG3_CTRL, 
+	bLmtMinOnTi=> , 
+	rActTiOn=> , 
+	rActTiOff=> , 
+	udiRemTiOn=> , 
+	udiRemTiOff=> );
+	
+	
+	
+(* REserve*)	
+
+(*
+Heat_REG4_CTRL(	
+	fSetpointValue:= fSetpointValue4, 
+	fActualValue:= Temp_Heatmatt4 , 
+	bReset:= , 
+	fCtrlCycleTime:= 0.1, 
+	fKp:=fKP_Controller_Heatmatt4 , 
+	fTn:=fKI_Controller_Heatmatt4 , 
+	fTv:=0.1 , 
+	fTd:= 0.1, 
+	fCtrlOutput=>fPWMDutyCycle4, 
+	nErrorStatus=>nErrorStatus_Heatmatt4 );
+
+	*)
+	
+
+
+(* Der Regler soll vorübergehend so funktionieren, dass im Haupt-Manu Mode der regeler im Auto-Modus läuft*)
+	IF Ctr_Manu AND Control_Manu_active =FALSE THEN
+
+	 Ctr_Manu_active:=TRUE;
+	 Ctr_Auto_active:=FALSE;
+	 Ctr_Reset_active:=FALSE;
+	ELSE IF Control_Manu_active THEN
+	
+	 Ctr_Manu_active:=FALSE;
+	 Ctr_Auto_active:=TRUE;
+	 Ctr_Reset_active:=FALSE;
+	ELSE IF Ctr_Reset THEN
+	 Ctr_Manu_active:=FALSE;
+	 Ctr_Auto_active:=FALSE;
+	 Ctr_Reset_active:=TRUE;
+	
+	END_IF
+	END_IF
+	END_IF
+
+
+
+	
+	
+
+(*Wichtige info: Zurzeit  ist der Manu-Ausgang der Haupt-Ausgang, auch wenn der Regler im Auto_Modus arbeitet*)
+
+
+
+//Regler Heizregister 1-4 und 5-8
+
+IF T_HE_Einduesung_Oben_Visu > T_Limit_Heatreg_top  OR 
+fTemp_mean_belt_top > T_Limit_Heatreg_top OR
+OK_For_HEAT_WHILE_FAN_IS_ON = FALSE THEN
+HEAT_Reg_1_Manu:=FALSE;
+bAuto_Heat_REG1_CTRL:=FALSE;
+ELSE
+HEAT_Reg_1_Manu:=bManuHeat_REG1_CTRL OR bAuto_Heat_REG1_CTRL;
+END_IF;
+
+IF T_HE_Einduesung_unten_Visu > T_Limit_Heatreg_bottom  OR 
+fTemp_mean_belt_bottom > T_Limit_Heatreg_bottom OR
+OK_For_HEAT_WHILE_FAN_IS_ON = FALSE THEN
+HEAT_Reg_2_Manu:=FALSE;
+bAuto_Heat_REG2_CTRL:=FALSE;
+ELSE
+HEAT_Reg_2_Manu:=bManuHeat_REG2_CTRL OR bAuto_Heat_REG2_CTRL;
+END_IF;
+
+
+
+//OK_For_HEAT_WHILE_FAN_IS_ON:=SteamFAN_Switch_ON_manu AND SteamFan_ON_manu AND Setpoint_SteamFan_Visu >=0;
+
+//Versuch mal so, wiel Preobleme mit Zeile oben:
+IF SteamFAN_Switch_ON_manu AND SteamFan_ON_manu AND Setpoint_SteamFan_Visu > 0 THEN
+OK_For_HEAT_WHILE_FAN_IS_ON:=TRUE;
+ELSE
+OK_For_HEAT_WHILE_FAN_IS_ON:=FALSE;
+END_IF;
+
+//Heizregister bei Kompressor (verhinderung von Kondensation)
+
+
+IF T_Monitor_Heatreg1 > T_Limit_Heatreg  OR T_Monitor_Heatreg2 > T_Limit_Heatreg THEN
+
+HEAT_Reg_3_Manu:=FALSE;
+//HEAT_Reg_4_Manu:=FALSE;
+ELSE
+	
+HEAT_Reg_3_Manu:=bManuHeat_REG3_CTRL OR bAuto_Heat_REG3_CTRL;
+//HEAT_Reg_4_Manu:=bManuHeat_REG4_CTRL OR bAuto_Heat_REG4_CTRL;
+
+END_IF;
+
+
+
+
+
+
+	(*Hier wird der Setpoint automatisch auf 0 gesetzt*)
+
+
+
+	IF  Main_Relais = FALSE THEN
+		
+	bManuHeat_REG1_CTRL:=FALSE;
+	bManuHeat_REG2_CTRL:=FALSE;
+	bManuHeat_REG3_CTRL:=FALSE;
+	bManuHeat_REG4_CTRL:=FALSE;
+	
+	bAuto_Heat_REG1_CTRL:=FALSE;
+	bAuto_Heat_REG2_CTRL:=FALSE;
+	bAuto_Heat_REG3_CTRL:=FALSE;
+	bAuto_Heat_REG4_CTRL:=FALSE;
+	
+	fSetpointValue1:=0;
+	fSetpointValue2:=0;
+	fSetpointValue3:=0;
+	fSetpointValue4:=0;
+	
+	
+	END_IF;
+
+
+
+
+
+
+
+
+fTemp_mean_belt_top:= (T_DK_Band_oben1_Visu + T_DK_Band_oben3_Visu) /2.0;
+
+fTemp_mean_belt_bottom:= (T_DK_Band_unten1_Visu+ T_DK_Band_unten3_Visu) /2.0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="Controller">
+      <LineId Id="614" Count="4" />
+      <LineId Id="11" Count="7" />
+      <LineId Id="407" Count="0" />
+      <LineId Id="411" Count="9" />
+      <LineId Id="408" Count="1" />
+      <LineId Id="452" Count="0" />
+      <LineId Id="443" Count="8" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="34" Count="6" />
+      <LineId Id="490" Count="0" />
+      <LineId Id="41" Count="2" />
+      <LineId Id="441" Count="1" />
+      <LineId Id="61" Count="2" />
+      <LineId Id="96" Count="8" />
+      <LineId Id="477" Count="10" />
+      <LineId Id="424" Count="0" />
+      <LineId Id="488" Count="0" />
+      <LineId Id="491" Count="15" />
+      <LineId Id="440" Count="0" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="507" Count="0" />
+      <LineId Id="123" Count="5" />
+      <LineId Id="508" Count="1" />
+      <LineId Id="129" Count="21" />
+      <LineId Id="165" Count="0" />
+      <LineId Id="683" Count="83" />
+      <LineId Id="536" Count="0" />
+      <LineId Id="166" Count="0" />
+      <LineId Id="667" Count="0" />
+      <LineId Id="838" Count="9" />
+      <LineId Id="668" Count="0" />
+      <LineId Id="767" Count="2" />
+      <LineId Id="776" Count="61" />
+      <LineId Id="775" Count="0" />
+      <LineId Id="770" Count="4" />
+      <LineId Id="669" Count="0" />
+      <LineId Id="681" Count="1" />
+      <LineId Id="849" Count="27" />
+      <LineId Id="167" Count="0" />
+      <LineId Id="877" Count="0" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="879" Count="0" />
+      <LineId Id="878" Count="0" />
+      <LineId Id="890" Count="0" />
+      <LineId Id="1040" Count="0" />
+      <LineId Id="1039" Count="0" />
+      <LineId Id="510" Count="7" />
+      <LineId Id="1079" Count="0" />
+      <LineId Id="519" Count="1" />
+      <LineId Id="934" Count="1" />
+      <LineId Id="169" Count="0" />
+      <LineId Id="905" Count="9" />
+      <LineId Id="904" Count="0" />
+      <LineId Id="918" Count="0" />
+      <LineId Id="537" Count="0" />
+      <LineId Id="927" Count="6" />
+      <LineId Id="1038" Count="0" />
+      <LineId Id="551" Count="0" />
+      <LineId Id="553" Count="10" />
+      <LineId Id="971" Count="0" />
+      <LineId Id="1015" Count="10" />
+      <LineId Id="552" Count="0" />
+      <LineId Id="972" Count="1" />
+      <LineId Id="1037" Count="0" />
+      <LineId Id="229" Count="0" />
+      <LineId Id="564" Count="10" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="974" Count="0" />
+      <LineId Id="1026" Count="10" />
+      <LineId Id="276" Count="0" />
+      <LineId Id="975" Count="1" />
+      <LineId Id="575" Count="0" />
+      <LineId Id="980" Count="0" />
+      <LineId Id="979" Count="0" />
+      <LineId Id="576" Count="10" />
+      <LineId Id="977" Count="0" />
+      <LineId Id="297" Count="0" />
+      <LineId Id="978" Count="0" />
+      <LineId Id="298" Count="22" />
+      <LineId Id="988" Count="0" />
+      <LineId Id="321" Count="0" />
+      <LineId Id="989" Count="0" />
+      <LineId Id="322" Count="1" />
+      <LineId Id="991" Count="2" />
+      <LineId Id="990" Count="0" />
+      <LineId Id="324" Count="1" />
+      <LineId Id="1182" Count="1" />
+      <LineId Id="326" Count="0" />
+      <LineId Id="329" Count="1" />
+      <LineId Id="332" Count="0" />
+      <LineId Id="337" Count="1" />
+      <LineId Id="1122" Count="0" />
+      <LineId Id="1185" Count="1" />
+      <LineId Id="1124" Count="0" />
+      <LineId Id="1126" Count="1" />
+      <LineId Id="1129" Count="1" />
+      <LineId Id="339" Count="0" />
+      <LineId Id="1117" Count="2" />
+      <LineId Id="1225" Count="0" />
+      <LineId Id="1121" Count="0" />
+      <LineId Id="981" Count="1" />
+      <LineId Id="1222" Count="2" />
+      <LineId Id="983" Count="2" />
+      <LineId Id="994" Count="1" />
+      <LineId Id="998" Count="3" />
+      <LineId Id="1011" Count="0" />
+      <LineId Id="1005" Count="5" />
+      <LineId Id="986" Count="1" />
+      <LineId Id="352" Count="2" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="369" Count="2" />
+      <LineId Id="1139" Count="0" />
+      <LineId Id="372" Count="3" />
+      <LineId Id="1142" Count="4" />
+      <LineId Id="1135" Count="0" />
+      <LineId Id="376" Count="0" />
+      <LineId Id="1136" Count="2" />
+      <LineId Id="1140" Count="1" />
+      <LineId Id="377" Count="1" />
+      <LineId Id="384" Count="7" />
+      <LineId Id="1013" Count="1" />
+      <LineId Id="1012" Count="0" />
+      <LineId Id="392" Count="14" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

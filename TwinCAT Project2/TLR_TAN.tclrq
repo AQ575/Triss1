@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<TcLicenseInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2011/11/TcLicenseInfo">
+	<TargetInfo>
+		<TcTargetDesc>
+			<TargetType>CB6263-WIN 6.1</TargetType>
+			<TargetVersion>
+				<Version>3</Version>
+				<Revision>1</Revision>
+				<Build>4024</Build>
+			</TargetVersion>
+			<TargetFeatures>
+				<Level>CP</Level>
+				<NetId>192.168.200.4.1.1</NetId>
+			</TargetFeatures>
+			<Hardware>
+				<Model>C6017-0010</Model>
+				<SerialNo>00001OQ0</SerialNo>
+				<CPUVersion>0.0</CPUVersion>
+				<Date>0.0.00</Date>
+				<CPUArchitecture>0</CPUArchitecture>
+			</Hardware>
+			<OsImage>
+				<ImageDevice>CB6263</ImageDevice>
+				<ImageVersion>2019-10</ImageVersion>
+				<ImageLevel>IN-0202-0012</ImageLevel>
+				<OsName>Windows Embedded Standard</OsName>
+				<OsVersion>6.1</OsVersion>
+			</OsImage>
+		</TcTargetDesc>
+	</TargetInfo>
+	<LicenseInfo>
+		<SystemId Level="50" SerialNo="00001OQ0" MacAddress="00010545b797">{C0EB9D7E-6E91-F669-F6B0-5191E9E747F5}</SystemId>
+		<IssueTime>2020-06-03T14:45:00</IssueTime>
+		<License ManuallyAdded="true">
+			<LicenseId>{FDE02854-39A7-440C-9EAE-C234A16A3CED}</LicenseId>
+			<Name>TC3 PLC-HMI</Name>
+			<OrderNo>TF1800</OrderNo>
+			<LicenseTAN>T9V40-J2DRB</LicenseTAN>
+		</License>
+		<License ManuallyAdded="true">
+			<LicenseId>{66689887-CCBD-452C-AC9A-039D997C6E66}</LicenseId>
+			<Name>TC3 PLC</Name>
+			<OrderNo>TC1200</OrderNo>
+			<LicenseTAN>B9V40-12DXB</LicenseTAN>
+		</License>
+		<License ManuallyAdded="true">
+			<LicenseId>{7AFD0713-1333-4A3B-938C-7B9BD0418C8D}</LicenseId>
+			<Name>TC3 PLC-HMI Web</Name>
+			<OrderNo>TF1810</OrderNo>
+			<LicenseTAN>TPV40-J2NXJ</LicenseTAN>
+		</License>
+	</LicenseInfo>
+</TcLicenseInfo>

@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <GVL Name="GVL_1" Id="{cdc73a1a-379c-4e7d-8adf-3be3c9adbe58}">
+    <Declaration><![CDATA[VAR_GLOBAL
+	
+(*Ab hier: Sensorik und Aktorik des neuen Monstartors, oberhalb sind teils nicht verwendete Variablen!!*)
+
+
+Scope_T_Vor_WT_IN AT%I* : INT;
+Scope_T_Vor_WT:REAL;
+Scope_T_Vor_WT_Visu:REAL;
+Scope_T_nach_WT_IN AT%I* : INT;
+Scope_T_nach_WT:REAL;
+Scope_T_nach_WT_Visu:REAL;
+Scope_T_HE_Einduesung_Oben_IN AT%I* : INT;
+Scope_T_HE_Einduesung_Oben:REAL;
+Scope_T_HE_Einduesung_Oben_Visu:REAL;
+Scope_T_HE_Einduesung_Unten_IN AT%I* : INT;
+Scope_T_HE_Einduesung_Unten:REAL;
+Scope_T_HE_Einduesung_Unten_Visu:REAL;
+Scope_T_Einduesung_Unten_IN AT%I* : INT;
+Scope_T_Einduesung_Unten:REAL;
+Scope_T_Einduesung_Unten_Visu:REAL;
+Scope_T_Einduesung_Oben_IN AT%I* : INT;
+Scope_T_Einduesung_Oben:REAL;
+Scope_T_Einduesung_Oben_Visu:REAL;
+Scope_T_Absaugung_Oben_IN AT%I* : INT;
+Scope_T_Absaugung_Oben:REAL;
+Scope_T_Absaugung_Oben_Visu:REAL;
+Scope_T_Absaugung_Unten_IN AT%I* : INT;
+Scope_T_Absaugung_Unten:REAL;
+Scope_T_Absaugung_Unten_Visu:REAL;
+Scope_T_Vor_UmdampfLuefter_IN AT%I* : INT;
+Scope_T_Vor_UmdampfLuefter:REAL;
+Scope_T_Vor_UmdampfLuefter_Visu:REAL;
+Scope_T_Komp_Auslass_IN AT%I* : INT;
+Scope_T_Komp_Auslass:REAL;
+Scope_T_Komp_Auslass_Visu:REAL;
+Scope_T_Komp_Einlass_IN AT%I* : INT;
+Scope_T_Komp_Einlass:REAL;
+Scope_T_Komp_Einlass_Visu:REAL;
+Scope_T_Kond_Auslass_IN AT%I* : INT;
+Scope_T_Kond_Auslass:REAL;
+Scope_T_Kond_Auslass_Visu:REAL;
+Scope_T_DK_Oben_IN AT%I* : INT;
+Scope_T_DK_Oben:REAL;
+Scope_T_DK_Oben_Visu:REAL;
+Scope_T_DK_Mitte_IN AT%I* : INT;
+Scope_T_DK_Mitte:REAL;
+Scope_T_DK_Mitte_Visu:REAL;
+Scope_T_DK_Unten_IN AT%I* : INT;
+Scope_T_DK_Unten:REAL;
+Scope_T_DK_Unten_Visu:REAL;
+Scope_T_Mat_Auslass1_IN AT%I* : INT;
+Scope_T_Mat_Auslass1:REAL;
+Scope_T_Mat_Auslass1_Visu:REAL;
+Scope_T_Mat_Auslass2_IN AT%I* : INT;
+Scope_T_Mat_Auslass2:REAL;
+Scope_T_Mat_Auslass2_Visu:REAL;
+Scope_T_Mat_Auslass3_IN AT%I* : INT;
+Scope_T_Mat_Auslass3:REAL;
+Scope_T_Mat_Auslass3_Visu:REAL;
+Scope_T_Mat_Auslass4_IN AT%I* : INT;
+Scope_T_Mat_Auslass4:REAL;
+Scope_T_Mat_Auslass4_Visu:REAL;
+Scope_T_Komp_Gehaeuse_IN AT%I* : INT;
+Scope_T_Komp_Gehaeuse:REAL;
+Scope_T_Komp_Gehaeuse_Visu:REAL;
+Scope_T_DK_Band_oben1_IN AT%I* : INT;
+Scope_T_DK_Band_oben1:REAL;
+Scope_T_DK_Band_oben1_Visu:REAL;
+Scope_T_DK_Band_oben2_IN AT%I* : INT;
+Scope_T_DK_Band_oben2:REAL;
+Scope_T_DK_Band_oben2_Visu:REAL;
+Scope_T_DK_Band_oben3_IN AT%I* : INT;
+Scope_T_DK_Band_oben3:REAL;
+Scope_T_DK_Band_oben3_Visu:REAL;
+Scope_T_DK_Band_unten1_IN AT%I* : INT;
+Scope_T_DK_Band_unten1:REAL;
+Scope_T_DK_Band_unten1_Visu:REAL;
+Scope_T_DK_Band_unten2_IN AT%I* : INT;
+Scope_T_DK_Band_unten2:REAL;
+Scope_T_DK_Band_unten2_Visu:REAL;
+Scope_T_DK_Band_unten3_IN AT%I* : INT;
+Scope_T_DK_Band_unten3:REAL;
+Scope_T_DK_Band_unten3_Visu:REAL;
+Scope_T_DK_Steigband1_IN AT%I* : INT;
+Scope_T_DK_Steigband1:REAL;
+Scope_T_DK_Steigband1_Visu:REAL;
+Scope_T_DK_Steigband2_IN AT%I* : INT;
+Scope_T_DK_Steigband2:REAL;
+Scope_T_DK_Steigband2_Visu:REAL;
+Scope_T_DK_Steigband3_IN AT%I* : INT;
+Scope_T_DK_Steigband3:REAL;
+Scope_T_DK_Steigband3_Visu:REAL;
+Scope_T_DK_Steigband4_IN AT%I* : INT;
+Scope_T_DK_Steigband4:REAL;
+Scope_T_DK_Steigband4_Visu:REAL;
+Scope_Temp_Heatmatt1_IN  AT%I* : INT;
+Scope_Temp_Heatmatt2_IN  AT%I* : INT;
+Scope_Temp_Heatmatt3_IN  AT%I* : INT;
+Scope_Temp_Heatmatt4_IN  AT%I* : INT;
+Scope_Temp_Heatmatt5_IN  AT%I* : INT;
+Scope_Temp_Heatmatt6_IN  AT%I* : INT;
+Scope_Temp_Heatmatt7_IN  AT%I* : INT;
+Scope_Temp_Heatmatt8_IN  AT%I* : INT;
+Scope_Temp_Heatmatt9_IN  AT%I* : INT;
+Scope_Temp_Heatmatt10_IN  AT%I* : INT;
+Scope_Temp_Heatmatt1 : INT;
+Scope_Temp_Heatmatt2 : INT;
+Scope_Temp_Heatmatt3 : INT;
+Scope_Temp_Heatmatt4 : INT;
+Scope_Temp_Heatmatt5 : INT;
+Scope_Temp_Heatmatt6 : INT;
+Scope_Temp_Heatmatt7 : INT;
+Scope_Temp_Heatmatt8 : INT;
+Scope_Temp_Heatmatt9 : INT;
+Scope_Temp_Heatmatt10 : INT;
+Scope_Temp_compressor_Self : INT;
+Scope_P_Vor_WT_IN AT%I* : INT;
+Scope_P_Vor_WT:REAL;
+Scope_P_Vor_WT_Visu:REAL;
+Scope_P_Durchfluss_IN AT%I* : INT;
+Scope_P_Durchfluss:REAL;
+Scope_P_Durchfluss_Visu:REAL;
+Scope_P_Komp_Einlass_IN AT%I* : INT;
+Scope_P_Komp_Einlass:REAL;
+Scope_P_Komp_Einlass_Visu:REAL;
+Scope_P_Komp_Auslass_IN AT%I* : INT;
+Scope_P_Komp_Auslass:REAL;
+Scope_P_Komp_Auslass_Visu:REAL;
+Scope_W_Kond_Wasser_IN AT%I* : INT;
+Scope_W_Kond_Wasser:REAL;
+Scope_W_Kond_Wasser_Visu:REAL;
+Scope_O2_IN AT%I* : INT;
+Scope_O2:REAL;
+Scope_O2_Visu:REAL;
+
+
+
+END_VAR
+
+]]></Declaration>
+  </GVL>
+</TcPlcObject>

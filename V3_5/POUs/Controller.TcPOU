@@ -1,0 +1,587 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <POU Name="Controller" Id="{a4f0363d-4700-4e6b-b7f8-a131910cd614}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Controller
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	CTRL_1: FB_BasicPID;
+	CTRL_2: FB_BasicPID;
+	
+	Heat_REG1_CTRL:CTRL_PID;
+	Heat_REG2_CTRL:CTRL_PID;
+	Heat_REG3_CTRL:CTRL_PID;
+	Heat_REG4_CTRL:CTRL_PID;
+	Heat_REG5_CTRL:CTRL_PID;
+	Heat_REG6_CTRL:CTRL_PID;
+	Heat_REG7_CTRL:CTRL_PID;
+	Heat_REG8_CTRL:CTRL_PID;
+	
+	
+	
+	Heat_REG1_PWM:CTRL_PWM;
+	Heat_REG2_PWM:CTRL_PWM;
+	Heat_REG3_PWM:CTRL_PWM;
+	Heat_REG4_PWM:CTRL_PWM;
+	Heat_REG5_PWM:CTRL_PWM;
+	Heat_REG6_PWM:CTRL_PWM;
+	Heat_REG7_PWM:CTRL_PWM;
+	Heat_REG8_PWM:CTRL_PWM;
+	
+	
+	
+	
+	
+	fPWMDutyCycle1_out: REAL;
+	fPWMDutyCycle2_out: REAL;
+	fPWMDutyCycle3_out: REAL;
+	fPWMDutyCycle4_out: REAL;
+	
+	
+	
+	
+	
+	HEAT_Reg_2_OUT_local: BOOL;
+	HEAT_Reg_1_OUT_local: BOOL;
+	HEAT_Reg_3_OUT_local: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+
+(* Infos zu den Reglern:
+
+1. Es wurde eine von OSCAT-entwickelte Library-Sammlung zusammengefasst, damit diese auch als-FB/FC-Sammlung direkt im TC3-eingebunden werden können.
+Die direkte Einbindung der OSCAT-Libs im Lib-Repository von TC3 macht Probleme, desshalb die direkte FB/FC Sammlung
+
+In dieser Sammlung (Ornder PID_Controller_LIB) sind die CRT_PID & CTRL_PWM von OSCAT enthalten, welche für die Heizregler im Fall TRISS eingesetzt werden.
+
+Wichtig als Backround: Die Controller_LIbs von Beckhoff sind etwas teuer, wenn nur die wesentlichen Grundfunktionen verwendet werden!!!
+
+Andere Alternative wäre gewesen, wenn bei der Basic_PID Regler aus den Utility-Libs verwendet wird: (FB_BAsicPID) und selber eine umrechnung auf den PWM-Ausgang gemacht wird
+
+Was sich nicht lohnt ist die Building-Automation LIB verwendet wird, da diese zwar einen Analog-PWM Ausgang beinhaltet, aber dieser PWM-Ausgang sehr "Primitiv" erstellt wurde
+
+FAZIT: OSCAT so lange es geht & wenn dann zur Controller LIB von Beckhoff wechseln!!!
+*)
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+	
+	
+(*
+
+PID_CTRL
+
+Type Funktionsbaustein
+Input ACT : REAL (gemessener Wert nach der Strecke)
+SET : REAL (Vorgabewert)
+SUP : REAL (Rauschunterdrückung)
+OFS : REAL (Ofset für den Ausgang)
+M_I : REAL (Eingangswert für manuellen Betrieb)
+MAN : BOOL (Umschalten auf Handbetrieb, MANUAL = TRUE)
+RST : BOOL (Asynchroner Reset-Eingang)
+KP : REAL (Verstärkung des Reglers)
+TN : REAL (Nachstellzeit des Reglers)
+TV : REAL (Vorhaltezeit des Reglers)
+LL : REAL (untere Ausgangsbegrenzung)
+LH : REAL (obere Ausgangsbegrenzung)
+Output Y : REAL (Ausgang des Reglers)
+DIFF : Real (Regelabweichung)
+LIM : BOOL (TRUE, wenn der Ausgang ein Limit erreicht hat)
+
+
+CTRL_PID ist ein PID-Regler mit dynamischen Anti Wind-Up und manuellem
+Steuereingang. Der PID Regler arbeitet nach der Formel:
+Y = KP * ( DIFF + 1/TN * INTEG(DIFF) + TV *DERIV(DIFF)) + OFFSET
+wobei DIFF = SET_POINT – ACTUAL
+Im Handbetrieb (Manual = TRUE) gilt: Y = MANUAL_IN + OFFSET
+ACT ist der gemessene Wert nach der Regelstrecke und SET ist die Sollwertvorgabe
+für den Regler. Die Eingangswerte LH und LL begrenzen den
+Ausgangswert Y. Mit RST kann der interne Integrator jederzeit auf 0 gesetzt
+werden. Der Ausgang LIM signalisiert das der Regler an eine der
+Grenzen LL oder LH gelaufen ist. Der PID-Regler arbeitet frei laufend und
+benutzt zur Berechnung die Trapezregel für höchste Genauigkeit und optimale
+Geschwindigkeit. Die Default-Werte der Eingangsparameter sind wie
+folgt vordefniert: KP = 1, TN = 1, TV = 1, LIMIT_L = -1000 und LIMIT_H =
++1000. Mit dem Eingang SUP wird eine Rauschunterdrückung eingestellt,
+der Wert am Eingang SUP legt fest ab welcher Regeldiferenz der Regler
+einschaltet. Mit SUP wird vermieden das der Ausgang des Reglers dauern
+schwankt. Der Wert am Eingang SUP sollte so bemessen sein das er das
+Rauschen der Regelstrecke und der Sensoren unterdrückt. Wird zum Beispiel
+der Eingang SUP auf 0.1 gesetzt so wird der Regler erst bei Regelabweichungen
+größer als 0.1 aktiv. Der Ausgang DIFF stellt die gemessene
+und durch ein Noise Filter (DEAD_BAND) geflterte Regelabweichung zur
+Verfügung. DIFF wird in einer Regelstrecke normalerweise nicht benötigt,
+kann aber zur Beeinfussung der Regelparameter benutzt werden. Der Eingang
+OFS wird als letzter Wert zum Ausgang addiert, und dient vor allem
+zum kompensieren von Störsignalen, deren Wirkung auf den Regelkreis
+abgeschätzt werden kann.
+Der Regler arbeitet mit einem Dynamischen Wind-Up das verhindert dass
+der Integrator bei erreichen eines Ausgangslimits und weiterer Regelabweichung
+unbegrenzt weiter läuft und die Regeleigenschaften negativ beeinfusst.
+In der Einleitung des Kapitel Regelungstechnik fnden sich weitere
+Details zum Thema Anti Wind-Up.
+
+
+
+
+
+PWM:
+CTRL_PWM
+Type Funktionsbaustein
+Input CI : REAL (Eingang vom Controller)
+MAN_IN : REAL (Manueller Eingangswert)
+MANUAL : BOOL (Umschalter für Handbetrieb)
+F : REAL (Frequenz der Ausgangsimpulse in Hz)
+Output Q : BOOL (Steuersignal)
+
+
+CTRL_PWM wandelt den Eingangswert CI (0..1) in ein Pulsweitenmoduliertes
+Ausgangssignal Q. Wenn MANUAL = TRUE wird am Ausgang Q Der Eingangswert
+von MAN_IN ausgegeben. CTRL_OUT kann benutzt werden um
+eigene Regelbausteine Aufzubauen.
+397
+*)
+
+
+
+
+
+
+
+
+
+//Verknüpfung = PID Regler => PWM => OUTPUT
+	
+//Heizregister Gruppe 1 oben 1-4
+
+
+Heat_reg1_CTRL(
+	ACT:=T_Einduesung_oben_Visu , 
+	SET:=fSetpointValue1 , 
+	SUP:= , 
+	OFS:= , 
+	M_I:= , 
+	MAN:= , 
+	RST:= , 
+	KP:=fKP_Controller_Heatmatt1 , 
+	TN:=fKI_Controller_Heatmatt1, 
+	TV:= 0.1 , 
+	LL:= 0, 
+	LH:= 100, 
+	Y=>fPWMDutyCycle1 , 
+	DIFF=> , 
+	LIM=> );
+
+
+fPWMDutyCycle1_out:=(fPWMDutyCycle1/100)*1;
+
+Heat_reg1_PWM(
+	CI:= fPWMDutyCycle1_out, 
+	MAN_IN:= , 
+	MANUAL:= , 
+	F:=1 , 
+	Q=> bAuto_Heat_REG1_CTRL);
+
+
+	
+
+
+
+	
+	
+
+	
+	
+	
+	
+	
+	//Heizregister Gruppe 2 unten 5-8
+
+Heat_reg2_CTRL(
+	ACT:=T_Einduesung_unten_Visu , 
+	SET:=fSetpointValue2 , 
+	SUP:= , 
+	OFS:= , 
+	M_I:= , 
+	MAN:= , 
+	RST:= , 
+	KP:=fKP_Controller_Heatmatt2 , 
+	TN:=fKI_Controller_Heatmatt2, 
+	TV:= 0.1 , 
+	LL:= 0, 
+	LH:= 100, 
+	Y=>fPWMDutyCycle2 , 
+	DIFF=> , 
+	LIM=> );
+
+
+fPWMDutyCycle2_out:=(fPWMDutyCycle2/100)*1;
+
+Heat_reg2_PWM(
+	CI:= fPWMDutyCycle2_out, 
+	MAN_IN:= , 
+	MANUAL:= , 
+	F:=1 , 
+	Q=> bAuto_Heat_REG2_CTRL );
+
+
+	
+	
+	
+	
+	
+	
+//Heizregister bei Kompressor (verhinderung von Kondensation)
+
+
+
+
+Heat_reg3_CTRL(
+	ACT:=T_Komp_Gehaeuse_Visu , 
+	SET:=fSetpointValue3 , 
+	SUP:= , 
+	OFS:= , 
+	M_I:= , 
+	MAN:= , 
+	RST:= , 
+	KP:=fKP_Controller_Heatmatt3 , 
+	TN:=fKI_Controller_Heatmatt3, 
+	TV:= 0.1 , 
+	LL:= 0, 
+	LH:= 100, 
+	Y=>fPWMDutyCycle3 , 
+	DIFF=> , 
+	LIM=> );
+
+
+fPWMDutyCycle3_out:=(fPWMDutyCycle3/100)*1;
+
+Heat_reg3_PWM(
+	CI:= fPWMDutyCycle3_out, 
+	MAN_IN:= , 
+	MANUAL:= , 
+	F:=1 , 
+	Q=> bAuto_Heat_REG3_CTRL);
+	
+	
+
+	
+	
+	
+	HEAT_Reg_1_OUT:=HEAT_Reg_1_OUT_local;
+	HEAT_Reg_2_OUT:=HEAT_Reg_2_OUT_local;
+	HEAT_Reg_3_OUT:=HEAT_Reg_3_OUT_local;
+	HEAT_Reg_4_OUT:=HEAT_Reg_4_manu;
+	HEAT_Reg_5_OUT:=HEAT_Reg_5_manu;
+	HEAT_Reg_6_OUT:=HEAT_Reg_6_manu;
+	HEAT_Reg_7_OUT:=HEAT_Reg_7_manu;
+	HEAT_Reg_8_OUT:=HEAT_Reg_8_manu;
+
+
+	HEAT_Reg_Mainswitch_out:=HEAT_Reg_Mainswitch_manu;
+
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+(* Der Regler soll vorübergehend so funktionieren, dass im Haupt-Manu Mode der regeler im Auto-Modus läuft*)
+	IF Ctr_Manu AND Control_Manu_active =FALSE THEN
+
+	 Ctr_Manu_active:=TRUE;
+	 Ctr_Auto_active:=FALSE;
+	 Ctr_Reset_active:=FALSE;
+	ELSE IF Control_Manu_active THEN
+	
+	 Ctr_Manu_active:=FALSE;
+	 Ctr_Auto_active:=TRUE;
+	 Ctr_Reset_active:=FALSE;
+	ELSE IF Ctr_Reset THEN
+	 Ctr_Manu_active:=FALSE;
+	 Ctr_Auto_active:=FALSE;
+	 Ctr_Reset_active:=TRUE;
+	
+	END_IF
+	END_IF
+	END_IF
+
+
+
+	
+	
+
+(*Wichtige info: Zurzeit  ist der Manu-Ausgang der Haupt-Ausgang, auch wenn der Regler im Auto_Modus arbeitet*)
+
+
+
+//Regler Heizregister 1-4 und 5-8
+
+IF T_HE_Einduesung_Oben_Visu > T_Limit_Heatreg_top  OR 
+fTemp_mean_belt_top > T_Limit_Heatreg_top OR
+OK_For_HEAT_WHILE_FAN_IS_ON = FALSE OR
+bManuHeat_REG1_switch_ON = FALSE THEN
+HEAT_Reg_1_Manu:=FALSE;
+bAuto_Heat_REG1_CTRL:=FALSE;
+HEAT_Reg_1_OUT:=FALSE;
+//HEAT_Reg_1_auto:=FALSE;
+ELSE
+HEAT_Reg_1_OUT_local:=bManuHeat_REG1_CTRL OR bAuto_Heat_REG1_CTRL;
+END_IF;
+
+
+
+IF T_HE_Einduesung_unten_Visu > T_Limit_Heatreg_bottom  OR 
+fTemp_mean_belt_bottom > T_Limit_Heatreg_bottom OR
+OK_For_HEAT_WHILE_FAN_IS_ON = FALSE  OR  
+bManuHeat_REG2_switch_ON = FALSE THEN
+HEAT_Reg_2_OUT:=FALSE;
+bAuto_Heat_REG2_CTRL:=FALSE;
+HEAT_Reg_2_OUT:=FALSE;
+//HEAT_Reg_2_auto:=FALSE;
+ELSE
+HEAT_Reg_2_OUT_local:=bManuHeat_REG2_CTRL OR bAuto_Heat_REG2_CTRL;
+END_IF;
+
+
+
+//OK_For_HEAT_WHILE_FAN_IS_ON:=SteamFAN_Switch_ON_manu AND SteamFan_ON_manu AND Setpoint_SteamFan_Visu >=0;
+
+//Versuch mal so, wiel Preobleme mit Zeile oben:
+IF SteamFAN_Switch_ON_manu AND SteamFan_ON_manu AND Setpoint_SteamFan_Visu >= 20.0 THEN
+OK_For_HEAT_WHILE_FAN_IS_ON:=TRUE;
+ELSE
+OK_For_HEAT_WHILE_FAN_IS_ON:=FALSE;
+END_IF;
+
+
+
+//Heizregister bei Kompressor (verhinderung von Kondensation)
+
+
+IF  T_Komp_Gehaeuse_Visu > T_Limit_Heatreg3  OR  bManuHeat_REG3_switch_ON = FALSE THEN
+
+HEAT_Reg_3_OUT:=FALSE;
+bAuto_Heat_REG3_CTRL:=FALSE;
+HEAT_Reg_3_OUT:=FALSE;
+//HEAT_Reg_3_auto:=FALSE;
+
+ELSE
+	
+HEAT_Reg_3_OUT_local:=bManuHeat_REG3_CTRL OR bAuto_Heat_REG3_CTRL;
+
+
+END_IF;
+
+
+
+
+
+
+	(*Hier wird der Setpoint automatisch auf 0 gesetzt*)
+
+
+
+	IF  Main_Relais = FALSE THEN
+		
+	bManuHeat_REG1_CTRL:=FALSE;
+	bManuHeat_REG2_CTRL:=FALSE;
+	bManuHeat_REG3_CTRL:=FALSE;
+	bManuHeat_REG4_CTRL:=FALSE;
+	
+	bAuto_Heat_REG1_CTRL:=FALSE;
+	bAuto_Heat_REG2_CTRL:=FALSE;
+	bAuto_Heat_REG3_CTRL:=FALSE;
+	bAuto_Heat_REG4_CTRL:=FALSE;
+	
+	fSetpointValue1:=0;
+	fSetpointValue2:=0;
+	fSetpointValue3:=0;
+	fSetpointValue4:=0;
+	
+	
+	END_IF;
+
+
+
+
+
+
+
+
+fTemp_mean_belt_top:= (T_HE_Einduesung_oben_Visu + T_Einduesung_oben_Visu) /2.0;
+
+fTemp_mean_belt_bottom:= (T_HE_Einduesung_Unten_Visu + T_Einduesung_Unten_Visu) /2.0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="Controller">
+      <LineId Id="1474" Count="3" />
+      <LineId Id="615" Count="0" />
+      <LineId Id="1538" Count="0" />
+      <LineId Id="1537" Count="0" />
+      <LineId Id="1539" Count="0" />
+      <LineId Id="1542" Count="0" />
+      <LineId Id="1540" Count="0" />
+      <LineId Id="1545" Count="0" />
+      <LineId Id="1544" Count="0" />
+      <LineId Id="1549" Count="0" />
+      <LineId Id="1548" Count="0" />
+      <LineId Id="1551" Count="0" />
+      <LineId Id="1550" Count="0" />
+      <LineId Id="1553" Count="0" />
+      <LineId Id="1552" Count="0" />
+      <LineId Id="1554" Count="0" />
+      <LineId Id="1547" Count="0" />
+      <LineId Id="616" Count="0" />
+      <LineId Id="442" Count="0" />
+      <LineId Id="61" Count="2" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="1511" Count="1" />
+      <LineId Id="1880" Count="3" />
+      <LineId Id="1879" Count="0" />
+      <LineId Id="1513" Count="2" />
+      <LineId Id="1573" Count="0" />
+      <LineId Id="1518" Count="1" />
+      <LineId Id="1555" Count="14" />
+      <LineId Id="1525" Count="0" />
+      <LineId Id="1571" Count="1" />
+      <LineId Id="1574" Count="29" />
+      <LineId Id="1570" Count="0" />
+      <LineId Id="1526" Count="0" />
+      <LineId Id="1604" Count="2" />
+      <LineId Id="1527" Count="1" />
+      <LineId Id="1607" Count="6" />
+      <LineId Id="1619" Count="0" />
+      <LineId Id="1618" Count="0" />
+      <LineId Id="1614" Count="3" />
+      <LineId Id="1534" Count="2" />
+      <LineId Id="841" Count="3" />
+      <LineId Id="1620" Count="2" />
+      <LineId Id="1655" Count="2" />
+      <LineId Id="1623" Count="19" />
+      <LineId Id="1644" Count="10" />
+      <LineId Id="845" Count="0" />
+      <LineId Id="774" Count="0" />
+      <LineId Id="167" Count="0" />
+      <LineId Id="877" Count="0" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="1040" Count="0" />
+      <LineId Id="927" Count="6" />
+      <LineId Id="1038" Count="0" />
+      <LineId Id="1713" Count="27" />
+      <LineId Id="1708" Count="4" />
+      <LineId Id="973" Count="0" />
+      <LineId Id="1037" Count="0" />
+      <LineId Id="1742" Count="28" />
+      <LineId Id="1741" Count="0" />
+      <LineId Id="1771" Count="0" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="1374" Count="0" />
+      <LineId Id="1036" Count="0" />
+      <LineId Id="276" Count="0" />
+      <LineId Id="1815" Count="11" />
+      <LineId Id="297" Count="0" />
+      <LineId Id="1658" Count="6" />
+      <LineId Id="978" Count="0" />
+      <LineId Id="298" Count="22" />
+      <LineId Id="988" Count="0" />
+      <LineId Id="321" Count="0" />
+      <LineId Id="989" Count="0" />
+      <LineId Id="322" Count="1" />
+      <LineId Id="991" Count="2" />
+      <LineId Id="990" Count="0" />
+      <LineId Id="324" Count="1" />
+      <LineId Id="1182" Count="1" />
+      <LineId Id="1429" Count="0" />
+      <LineId Id="326" Count="0" />
+      <LineId Id="329" Count="0" />
+      <LineId Id="1830" Count="0" />
+      <LineId Id="1827" Count="0" />
+      <LineId Id="330" Count="0" />
+      <LineId Id="332" Count="0" />
+      <LineId Id="337" Count="0" />
+      <LineId Id="1263" Count="0" />
+      <LineId Id="1262" Count="0" />
+      <LineId Id="338" Count="0" />
+      <LineId Id="1122" Count="0" />
+      <LineId Id="1185" Count="1" />
+      <LineId Id="1428" Count="0" />
+      <LineId Id="1124" Count="0" />
+      <LineId Id="1126" Count="0" />
+      <LineId Id="1831" Count="0" />
+      <LineId Id="1828" Count="0" />
+      <LineId Id="1127" Count="0" />
+      <LineId Id="1129" Count="1" />
+      <LineId Id="339" Count="0" />
+      <LineId Id="1117" Count="2" />
+      <LineId Id="1225" Count="0" />
+      <LineId Id="1121" Count="0" />
+      <LineId Id="981" Count="1" />
+      <LineId Id="1222" Count="2" />
+      <LineId Id="1425" Count="1" />
+      <LineId Id="983" Count="2" />
+      <LineId Id="994" Count="1" />
+      <LineId Id="998" Count="1" />
+      <LineId Id="1430" Count="0" />
+      <LineId Id="1832" Count="0" />
+      <LineId Id="1829" Count="0" />
+      <LineId Id="1000" Count="1" />
+      <LineId Id="1011" Count="0" />
+      <LineId Id="1005" Count="5" />
+      <LineId Id="986" Count="1" />
+      <LineId Id="352" Count="2" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="369" Count="2" />
+      <LineId Id="1139" Count="0" />
+      <LineId Id="372" Count="3" />
+      <LineId Id="1142" Count="4" />
+      <LineId Id="1135" Count="0" />
+      <LineId Id="376" Count="0" />
+      <LineId Id="1136" Count="2" />
+      <LineId Id="1140" Count="1" />
+      <LineId Id="377" Count="1" />
+      <LineId Id="384" Count="7" />
+      <LineId Id="1013" Count="1" />
+      <LineId Id="1012" Count="0" />
+      <LineId Id="392" Count="14" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Refactors>
+  <Renames>
+    <RenamedType>
+      <Type guid="6968b97f-d142-4807-bcbe-a867063140b6">MAIN</Type>
+      <From>MAIN</From>
+      <To>SCL_MAIN</To>
+    </RenamedType>
+  </Renames>
+</Refactors>

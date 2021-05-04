@@ -1,0 +1,2628 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="SCL_MAIN" Id="{2e7e718f-4d5d-448c-87b8-e6df954f4443}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM SCL_MAIN
+VAR
+
+	(*Funktionsaufrufe*)
+
+	
+	Puls_GEN_Watervalve:FB_Blink;
+
+	
+
+
+
+	Average1:Average;
+	Average2:Average;
+	Average3:Average;
+	Average4:Average;
+	Average5:Average;
+	Average6:Average;
+	Average7:Average;
+	Average8:Average;
+	Average9:Average;
+	Average10:Average;
+	Average11:Average;
+	Average12:Average;
+	Average13:Average;
+	Average14:Average;
+	Average15:Average;
+	Average16:Average;
+	Average17:Average;
+	Average18:Average;
+	Average19:Average;
+	Average20:Average;
+	Average21:Average;
+	Average22:Average;
+	Average23:Average;
+
+
+	F_TRIG1:F_TRIG;
+	R_TRIG1:R_TRIG;
+
+	OUT_FTRIG1:BOOL;
+	C_NOT_AUS: INT;
+
+
+
+
+	(*Rückstellung der Ventilsequenz vom Manuelltaster der einzelnen Ventile*)
+	F_TRIG2:F_TRIG;
+	F_TRIG3:F_TRIG;
+	F_TRIG4:F_TRIG;
+	F_TRIG5:F_TRIG;
+	F_TRIG6:F_TRIG;
+	F_TRIG7:F_TRIG;
+	F_TRIG8:F_TRIG;
+	F_TRIG9:F_TRIG;
+	F_TRIG10:F_TRIG;
+	F_TRIG11:F_TRIG;
+	F_TRIG12:F_TRIG;
+	F_TRIG20:F_TRIG;
+	R_TRIG10:R_TRIG;
+	R_TRIG11:R_TRIG;
+	R_TRIG12:R_TRIG;
+	R_TRIG13:R_TRIG;
+
+
+
+
+	SR1:SR;
+	SR2:SR;
+	SR3:SR;
+	SR4:SR;
+	SR5:SR;
+	SR6:SR;
+	SR7:SR;
+	SR8:SR;
+	SR9:SR;
+	SR10:SR;
+	SR11:SR;
+	SR12:SR;
+	SR13:SR;
+
+
+
+
+
+	Start_Programm: BOOL;
+	Res_Start_Programm: BOOL;
+	Set_Start_Programm: BOOL;
+	Emergency: BOOL;
+	nCounter : UINT;
+
+
+
+
+	(*ZEITEN*)
+
+	TON1:TP;
+	IN_T1:BOOL;
+	OUT_T1:BOOL;
+	TON2:TON;
+	IN_T2:BOOL;
+	OUT_T2:BOOL;
+	TON3:TON;
+	IN_T3:BOOL;
+	OUT_T3:BOOL;
+	ET_T3:TIME;
+	TON4:TON;
+	IN_T4:BOOL;
+	OUT_T4:BOOL;
+	TON5:TON;
+	IN_T5:BOOL;
+	OUT_T5:BOOL;
+	TON6:TON;
+	IN_T6:BOOL;
+	OUT_T6:BOOL;
+	TON7:TON;
+	IN_T7:BOOL;
+	OUT_T7:BOOL;
+	TON8:TON;
+	IN_T8:BOOL;
+	OUT_T8:BOOL;
+	TON9:TON;
+	IN_T9:BOOL;
+	OUT_T9:BOOL;
+	TON10:TON;
+	IN_T10:BOOL;
+	OUT_T10:BOOL;
+	TON11:TON;
+	IN_T11:BOOL;
+	OUT_T11:BOOL;
+	TON12:TON;
+	IN_T12:BOOL;
+	OUT_T12:BOOL;
+	TON13:TON;
+	IN_T13:BOOL;
+	OUT_T13:BOOL;
+	TON14:TON;
+	IN_T14:BOOL;
+	OUT_T14:BOOL;
+	TON15:TON;
+	IN_T15:BOOL;
+	OUT_T15:BOOL;
+	TON16:TON;
+	IN_T16:BOOL;
+	OUT_T16:BOOL;
+	TON17:TON;
+	IN_T17:BOOL;
+	OUT_T17:BOOL;
+	TON18:TON;
+	IN_T18:BOOL;
+	OUT_T18:BOOL;
+	TON19:TON;
+	IN_T19:BOOL;
+	OUT_T19:BOOL;
+	TON20:TON;
+	IN_T20:BOOL;
+	OUT_T20:BOOL;
+	TON21:TON;
+	IN_T21:BOOL;
+	OUT_T21:BOOL;
+	TON22:TON;
+	IN_T22:BOOL;
+	OUT_T22:BOOL;
+	TON23:TON;
+	IN_T23:BOOL;
+	OUT_T23:BOOL;
+	TON24:TON;
+	IN_T24:BOOL;
+	OUT_T24:BOOL;
+	TON25:TON;
+	IN_T25:BOOL;
+	OUT_T25:BOOL;
+	TON26:TON;
+	IN_T26:BOOL;
+	OUT_T26:BOOL;
+
+	TP30:TP;
+	IN_T30:BOOL;
+	OUT_T30:BOOL;
+
+
+
+
+
+
+
+
+
+
+
+
+
+	Ton_Pulsgen:TP;
+	OUT_Pulsgen: BOOL;
+
+	(*Hyterese DES*)
+
+
+	TON100:TON;
+	IN_T100:BOOL;
+	OUT_T100:BOOL;
+	TON101:TON;
+	IN_T101:BOOL;
+	OUT_T101:BOOL;
+	TON102:TON;
+	IN_T102:BOOL;
+	OUT_T102:BOOL;
+	TON103:TON;
+	IN_T103:BOOL;
+	OUT_T103:BOOL;
+	TON104:TON;
+	IN_T104:BOOL;
+	OUT_T104:BOOL;
+	TON105:TON;
+	IN_T105:BOOL;
+	OUT_T105:BOOL;
+	TON106:TON;
+	IN_T106:BOOL;
+	OUT_T106:BOOL;
+	TON107:TON;
+	IN_T107:BOOL;
+	OUT_T107:BOOL;
+
+
+	TON108:TON;
+	IN_T108:BOOL;
+	OUT_T108:BOOL;
+
+
+	Hyst1:Meine_HYST;
+	Hyst2:Meine_HYST;
+	Hyst3:Meine_HYST;
+	Hyst4:Meine_Hyst;
+	Hyst5:Meine_Hyst;
+	Hyst6:Meine_Hyst;
+	Hyst7:Meine_Hyst;
+	Hyst8:Meine_Hyst;
+	Hyst9:Meine_HYST;
+	Hyst10:Meine_HYST;
+
+
+	Change_dir: BOOL;
+
+	CTU1:CTU;
+	Res_C1: BOOL;
+	C_up1:BOOL;
+	(*C_val1: WORD; IST Global*)
+
+	CTU2:CTU;
+	Res_C2: BOOL;
+	C_up2:BOOL;
+	C_val2: WORD;
+
+	CTU3:CTU;
+	Res_C3: BOOL;
+	C_up3:BOOL;
+	C_val3: WORD;
+
+	CTU4:CTU;
+	Res_C4: BOOL;
+	C_up4:BOOL;
+	C_val4: WORD;
+
+	bBlink:BOOL;
+	bStart:BOOL;
+	C_Diff: INT;
+	C_Valve_Seq_Prop: INT;
+
+	Start_Auto_Export_INT: INT;
+	PWM: BOOL;
+	fbWriteRegs 	:	 FB_MBWriteRegs;
+
+
+	Current_OUT_Complete_L1_temp: REAL;
+	Current_OUT_Complete_L2_temp: REAL;
+	Current_OUT_Complete_L3_temp: REAL;
+	C_test: INT;
+	bError:BOOL;
+
+	FAN_Switch_ON_Manu: BOOL;
+	
+	
+	
+	
+	PID_Test: FB_BasicPID;
+	fSetpointValue_IN: LREAL;
+	fActualValue_IN: LREAL;
+	bReset_IN: BOOL;
+	fCtrlOutput_OUT: LREAL;
+	
+	
+	
+	Controller:Controller;
+	
+	
+	
+	
+	
+	
+	//Für UDP Kommunikation:
+	
+	bSendOnceToItself	: BOOL;(* Rising edge at this variable sends message to local host/port (itself) *)
+	bSendOnceToRemote	: BOOL;(* Rising edge at this variable sends message to the remote host/port *)
+	sSrvNetId			: T_AmsNetID 	:= '';(* TwinCAT TCP/IP server network address. Default: empty string. *)
+	sLocalHost			: T_IPv4Addr 	:= '192.168.100.88';(* Local address: String containing an (Ipv4) Internet Protocol dotted address. *)
+	nLocalPort			: UDINT			:= 1001;(* Local address: IP port number. *)
+	sRemoteHost			: T_IPv4Addr 	:= '192.168.100.101';(* Remote address: String containing an (Ipv4) Internet Protocol dotted address. *)
+	nRemotePort			: UDINT 		:= 1000;(* Remote address: IP port number. *)
+	bEnable				: BOOL 			:= TRUE;(* TRUE => Enable/connect, FALSE => Disable/disconnect *)
+	bLog				: BOOL			:= TRUE;(* TRUE => Enable log message output, FALSE => Disable *)
+
+	fbPeerToPeer		: FB_PeerToPeer := ( sPrefix := 'PeerToPeerA::' ); //für ehemals test mit IAS
+	
+   	fbTx				: FB_FrameFifo;
+   	fbRx				: FB_FrameFifo;
+   	fbLog				: FB_LogFifo;
+	
+   	stSendTo			: ST_FrameFifoEntry;
+   	stReceivedFrom		: ST_FrameFifoEntry;
+	sLoggedMessage		: T_MaxString;
+
+   	fbCloseAll 			: FB_SocketCloseAll;
+   	bInitialize			: BOOL := TRUE;
+	nErrID_FBClose		:UDINT;
+
+	T_Vor_WT_local: REAL;
+	T_Nach_WT_Local:REAL;
+	T_HE_Einduesung_Oben_Local:REAL;
+	T_HE_Einduesung_Unten_Local:REAL;
+	T_Einduesung_Oben_Local:REAL;
+	T_Einduesung_Unten_Local:REAL;
+	T_Absaugung_Oben_Local:REAL;
+	T_Absaugung_Unten_Local:REAL;
+	T_Vor_UmdampfLuefter_Local:REAL;
+	T_Komp_Einlass_Local:REAL;
+	T_Komp_Auslass_Local:REAL;
+	T_Kond_Auslass_Local:REAL;
+	T_DK_mitte_Local:REAL;
+	T_DK_unten_Local:REAL;
+	T_DK_oben_Local:REAL;
+	T_Mat_Auslass1_Local:REAL;
+	T_Mat_Auslass2_Local:REAL;
+	T_Mat_Auslass3_Local:REAL;
+	T_Mat_Auslass4_Local:REAL;
+	T_Mat_Auslass5_Local:REAL;
+	T_Mat_Auslass6_Local:REAL;
+	T_Mat_Auslass7_Local:REAL;
+	T_Mat_Auslass8_Local:REAL;
+	T_Komp_Gehaeuse_Local:REAL;
+	T_DK_Band_oben1_Local:REAL;
+	T_DK_Band_oben3_Local:REAL;
+	T_DK_Band_unten1_Local:REAL;
+	T_DK_Band_unten3_Local:REAL;
+	T_DK_Steigband1_Local:REAL;
+	T_DK_Steigband2_Local:REAL;
+	T_DK_Steigband3_Local:REAL;
+	T_DK_Steigband4_Local:REAL;
+
+	T_HE_Einduesung_Oben_Visu_Local: REAL;
+	P_Komp_Einlass_local: REAL;
+	P_Komp_Auslass_Local:REAL;
+	P_Kond_Auslass_Local: REAL;
+	P_Vor_WT_Local: REAL;
+	P_nach_WT_Local: REAL;
+	CountP: INT;
+	Compr: INT;
+	
+	
+	Move_M_Belts_PWM:CTRL_PWM;
+	Move_M_Belts_Feeder_PWM:CTRL_PWM;
+	
+	
+	
+	
+	
+	
+	
+	Feeder_Belt_PWMDutyCycle_out: REAL;
+	Main_Belt_PWMDutyCycle_out: REAL;
+
+	Feeder_Belt_PWM_OUT:BOOL;
+	Main_Belt_PWM_OUT:BOOL;
+END_VAR
+
+
+
+
+VAR_INPUT
+
+
+
+END_VAR
+VAR_IN_OUT
+
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+(* ______________________Version3
+Erstelldatum:		März.02020
+Ersteller:		Daniel Meyer
+Zweck:		Grundlageprogramm Aquaero Triss (Anlage3) *)
+
+(*Funktionsaufrufe*)
+
+
+
+Controller();
+
+
+
+
+
+
+
+Istwert_IN_NV_OUT:=(Istwert_IN_NV*100)/32767;
+
+
+
+(*_______________________________________________________________________________Skallierungen________________________________________________________________________*)
+
+
+
+
+
+
+(*Umdampfventilatorr*)
+
+
+//Neuerdings wird mit der Verschiebung dieser Zuweisung beim Autmatik-OP der Setpoint nicht mehr berücksichtigt
+
+ 
+//0-100%
+IF Activate_controller_V_Umdampf  THEN
+	Setpoint_SteamFan_IN:=REAL_TO_INT(fStellwert_V_Umdampf);
+	ELSE
+	Setpoint_SteamFan_IN:= Setpoint_SteamFan_Visu;
+END_IF;
+
+
+IF switch_Setpoint_Value =FALSE  THEN
+Setpoint_SteamFan_OUT:=(Setpoint_SteamFan_IN*32767)/100;
+ELSIF switch_Setpoint_Value AND Activate_controller_V_Umdampf  = FALSE THEN
+Setpoint_SteamFan_OUT:=(Setpoint_1_MIN_SteamFan_IN*32767)/1400;
+ELSE
+Setpoint_SteamFan_OUT:=0;
+END_IF;
+
+
+
+SteamFan_Actual_Turn:=(SteamFan_Actual_Turn_IN*2870)/32767;
+
+IF SteamFAN_Switch_ON_manu THEN SteamFan_OK:=TRUE; ELSE SteamFan_OK:=FALSE;	END_IF;
+
+
+
+
+
+
+
+(*Kompressoren*)
+
+
+//Neuerdings wird mit der Verschiebung dieser Zuweisung beim Autmatik-OP der Setpoint nicht mehr berücksichtigt 
+
+//0-100%
+IF Activate_controller_comp THEN
+	Setpoint_Compressor_IN:=REAL_TO_INT(fStellwert_comp);
+	ELSE
+	Setpoint_Compressor_IN:=Setpoint_Compressor_Visu;
+END_IF; 
+		
+		
+IF switch_Setpoint_Value = FALSE THEN
+Compressor_Setpoint_OUT:=(Setpoint_Compressor_IN*16384)/100;	(*Zurzeit ist beim Kompressor bei 5V der Max. Frequenzausgang.!! Noch kontrollieren warum??*)
+ELSIF switch_Setpoint_Value AND Activate_controller_V_Umdampf  = FALSE THEN
+Compressor_Setpoint_OUT:=(Setpoint_1_MIN_Compressor_IN*16384)/1400;
+ELSE
+	Compressor_Setpoint_OUT:=0;
+END_IF;
+
+
+
+	
+
+
+
+
+(*Wichtig!!! Zurzeit ist dies die Leistungsabgabe 20mA = 200% von max Leistung = 6KW*)
+
+Compressor_Actual_Turn:=(Compressor_Actual_Turn_IN*100.0)/4444;	(*0-100% Aufgrund von tests mit der Solldrehzahl*)
+
+(*0-100%*)
+
+
+
+
+
+
+
+
+(*Steig & Normalförderer*)
+
+Setpoint_M_Belt_Feeder_OUT:=(Setpoint_M_Belt_Feeder_IN*16384)/100;	(*Zurzeit ist beim Schneider Electric -FU bei 5V der Max. Frequenzausgang.!! Noch kontrollieren warum??*)
+
+M_Belt_Feeder_Actual_Turn:=(M_Belt_Feeder_Actual_Turn_IN*32767)/100;
+
+
+
+
+Setpoint_Belts_TOP_OUT:=(Setpoint_Belts_TOP_IN*16384)/100;
+
+Belts_TOP_Actual_Turn:=(Belts_TOP_Actual_Turn_IN*100.0)/32767;	(*0-100% *)
+
+
+
+
+Setpoint_Belts_bottom_OUT:=(Setpoint_Belts_bottom_IN*16384)/100;
+
+Belts_bottom_Actual_Turn:=(Belts_bottom_Actual_Turn_IN*100.0)/32767;	(*0-100% *)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*_____Strom und Energie_____*)
+
+
+(*zumteil auch: *50.0)/16383.5) bei 5VDC!!!*)
+
+
+
+
+Average4(Input_AV:=((Current_IN_SteamGen1*50.0)/32767.0) , OUTPUT_AV=>Current_OUT_SteamGen1);
+Average5(Input_AV:=((Current_IN_SteamGen2*50.0)/32767.0) , OUTPUT_AV=>Current_OUT_SteamGen2);
+Average6(Input_AV:=((Current_IN_SteamGen3*50.0)/32767.0) , OUTPUT_AV=>Current_OUT_SteamGen3);
+
+
+
+Average8(Input_AV:=((Current_IN_Compressor_L1*10.0)/32767.0) , OUTPUT_AV=>Current_OUT_Compressor_L1);
+Average9(Input_AV:=((Current_IN_Compressor_L2*10.0)/32767.0) , OUTPUT_AV=>Current_OUT_Compressor_L2);
+Average10(Input_AV:=((Current_IN_Compressor_L3*10.0)/32767.0) , OUTPUT_AV=>Current_OUT_Compressor_L3);
+
+Average11(Input_AV:=((Current_IN_Heatreg_1_TO_4*20.0)/32767.0) , OUTPUT_AV=>Current_OUT_Heatreg_1_TO_4);(*Wichtig!!*)
+Average12(Input_AV:=((Current_IN_Heatreg_5_TO_8*20.0)/32767.0) , OUTPUT_AV=>Current_OUT_Heatreg_5_TO_8);(*Wichtig!!!!!*)
+Average13(Input_AV:=((Current_IN_Heatreg_Compressor*20.0)/32767.0) , OUTPUT_AV=>Current_OUT_Heatreg_Compressor);(*Wichtig!!*)
+
+Average14(Input_AV:=((Current_IN_Fan_L1*20.0)/32767.0) , OUTPUT_AV=>Current_OUT_Fan_L1);
+Average15(Input_AV:=((Current_IN_Fan_L2*20.0)/32767.0) , OUTPUT_AV=>Current_OUT_Fan_L2);
+Average16(Input_AV:=((Current_IN_Fan_L3*20.0)/32767.0) , OUTPUT_AV=>Current_OUT_Fan_L3);
+
+Average17(Input_AV:=((Current_IN_Complete_L1*100.0)/32767.0) , OUTPUT_AV=>Current_OUT_Complete_L1 );
+Average18(Input_AV:=((Current_IN_Complete_L2*100.0)/32767.0) , OUTPUT_AV=>Current_OUT_Complete_L2 );
+Average19(Input_AV:=((Current_IN_Complete_L3*100.0)/32767.0) , OUTPUT_AV=>Current_OUT_Complete_L3 );
+
+
+
+
+
+
+
+
+
+
+
+(*1.732= Wurzel 3, es wird angenommen das Cos PHI = 0 und Wirkungsgrad = 0.8 ist*)
+
+
+
+
+
+
+Energy_OUT_Compressor_L1:=(Current_OUT_Compressor_L1*400*1.732*0.8)/1000;
+Energy_OUT_Compressor_L1:=(Current_OUT_Compressor_L1*400*1.732*0.8)/1000;
+Energy_OUT_Compressor_L1:=(Current_OUT_Compressor_L1*400*1.732*0.8)/1000;
+Energy_OUT_SteamFan_L1:=(Current_OUT_Heatreg_1_TO_4*400*1.732*0.8)/1000;
+Energy_OUT_SteamFan_L2:=(Current_OUT_Heatreg_5_TO_8*400*1.732*0.8)/1000;
+Energy_OUT_SteamFan_L3:=(Current_OUT_Heatreg_Compressor*400*1.732*0.8)/1000;
+Energy_OUT_SteamGen1:=(Current_OUT_Fan_L1*400*1.732*0.8)/1000;
+Energy_OUT_SteamGen2:=(Current_OUT_Fan_L2*400*1.732*0.8)/1000;
+Energy_OUT_SteamGen3:=(Current_OUT_Fan_L3*400*1.732*0.8)/1000;
+Energy_OUT_Complete_L1:=(Current_OUT_Complete_L1*400*1.732*0.8)/1000;
+Energy_OUT_Complete_L2:=(Current_OUT_Complete_L2*400*1.732*0.8)/1000;
+Energy_OUT_Complete_L3:=(Current_OUT_Complete_L3*400*1.732*0.8)/1000;
+
+
+
+
+
+
+
+T_Vor_WT_local:=(T_Vor_WT_IN*150.0)/32767;	(*SE-T 1.01*)
+T_Vor_WT_Visu:=T_Vor_WT_local+SE_T_1_01_Calib;
+
+T_Nach_WT_Local:=(T_Nach_WT_IN*150.0)/32767;(*SE-T 1.02*)
+T_Nach_WT_Visu:=T_Nach_WT_Local +SE_T_1_02_Calib;
+
+
+T_HE_Einduesung_Oben_Local:=T_HE_Einduesung_Oben_IN/10.0;(*SE-T 1.03*)
+T_HE_Einduesung_Oben_Visu:=T_HE_Einduesung_Oben_Local+SE_T_1_03_Calib;
+
+
+T_HE_Einduesung_Unten_Local:=T_HE_Einduesung_Unten_IN/10.0;(*SE-T 1.04*)
+T_HE_Einduesung_Unten_Visu:=T_HE_Einduesung_Unten_Local+SE_T_1_04_Calib;
+
+
+T_Einduesung_Oben_Local:=T_Einduesung_Oben_IN/10.0;(*SE-T 1.05*)
+T_Einduesung_Oben_Visu:=T_Einduesung_Oben_Local+SE_T_1_05_Calib;
+
+
+T_Einduesung_Unten_Local:=T_Einduesung_Unten_IN/10.0;(*SE-T 1.06*)
+T_Einduesung_Unten_Visu:=T_Einduesung_Unten_Local +SE_T_1_06_Calib;
+
+T_Absaugung_Oben_Local:=(T_Absaugung_Oben_IN*150.0)/32767;(*SE-T 1.07*)
+T_Absaugung_Oben_Visu:=T_Absaugung_Oben_Local +SE_T_1_07_Calib;
+
+T_Absaugung_Unten_Local:=T_Absaugung_Unten_IN/10.0;(*SE-T 1.08*)
+T_Absaugung_Unten_Visu:=T_Absaugung_Unten_Local +SE_T_1_08_Calib;
+
+T_Vor_UmdampfLuefter_Local:=T_Vor_UmdampfLuefter_IN/10.0;(*SE-T 1.09*)
+T_Vor_UmdampfLuefter_Visu:=T_Vor_UmdampfLuefter_Local +SE_T_1_09_Calib;
+
+T_Komp_Einlass_Local:=(T_Komp_Einlass_IN*150.0)/32767;(*SE-T 2.01*)
+T_Komp_Einlass_Visu:=T_Komp_Einlass_Local +SE_T_2_01_Calib;
+
+T_Komp_Auslass_Local:=T_Komp_Auslass_IN/10.0;(*SE-T 2.02*)
+T_Komp_Auslass_Visu:=T_Komp_Auslass_Local +SE_T_2_02_Calib;
+
+T_Kond_Auslass_Local:=(T_Kond_Auslass_IN*150.0)/32767;(*SE-T 2.03*)
+T_Kond_Auslass_Visu:=T_Kond_Auslass_Local +SE_T_2_03_Calib;
+
+T_DK_oben_Local:=(T_DK_oben_IN*150.0)/32767;(*SE-T 3.01*)
+T_DK_oben_Visu:=T_DK_oben_Local +SE_T_3_01_Calib;
+
+T_DK_mitte_Local:=(T_DK_mitte_IN*150.0)/32767;(*SE-T 3.02*)
+T_DK_mitte_Visu:=T_DK_mitte_Local +SE_T_3_02_Calib;
+
+T_DK_unten_Local:=T_DK_unten_IN/10.0;(*SE-T 3.03*)
+T_DK_unten_Visu:=T_DK_unten_Local +SE_T_3_03_Calib;
+
+T_Mat_Auslass1_Local:=T_Mat_Auslass1_IN/10.0;(*SE-T 3.71*)
+T_Mat_Auslass1_Visu:=T_Mat_Auslass1_Local +SE_T_3_71_Calib;
+
+T_Mat_Auslass2_Local:=T_Mat_Auslass2_IN/10.0;(*SE-T 3.72*)
+T_Mat_Auslass2_Visu:=T_Mat_Auslass2_Local +SE_T_3_72_Calib;
+
+T_Mat_Auslass3_Local:=T_Mat_Auslass3_IN/10.0;(*SE-T 3.73*)
+T_Mat_Auslass3_Visu:=T_Mat_Auslass3_Local +SE_T_3_73_Calib;
+
+T_Mat_Auslass4_Local:=T_Mat_Auslass4_IN/10.0;(*SE-T 3.74*)
+T_Mat_Auslass4_Visu:=T_Mat_Auslass4_Local +SE_T_3_74_Calib;
+
+T_Mat_Auslass5_Local:=T_Mat_Auslass5_IN/10.0;(*SE-T 3.71*)
+T_Mat_Auslass5_Visu:=T_Mat_Auslass5_Local +SE_T_3_75_Calib;
+
+T_Mat_Auslass6_Local:=T_Mat_Auslass6_IN/10.0;(*SE-T 3.72*)
+T_Mat_Auslass6_Visu:=T_Mat_Auslass6_Local +SE_T_3_76_Calib;
+
+T_Mat_Auslass7_Local:=T_Mat_Auslass7_IN/10.0;(*SE-T 3.73*)
+T_Mat_Auslass7_Visu:=T_Mat_Auslass7_Local +SE_T_3_77_Calib;
+
+T_Mat_Auslass8_Local:=T_Mat_Auslass8_IN/10.0;(*SE-T 3.74*)
+T_Mat_Auslass8_Visu:=T_Mat_Auslass8_Local +SE_T_3_78_Calib;
+
+T_Komp_Gehaeuse_Local:=T_Komp_Gehaeuse_IN/10.0; (*SE-T 3.51*)
+T_Komp_Gehaeuse_Visu:=T_Komp_Gehaeuse_Local +SE_T_3_51_Calib;
+
+T_DK_Band_oben1_Local:=T_DK_Band_oben1_IN/10.0;(*SE-T 1.81*)
+T_DK_Band_oben1_Visu:=T_DK_Band_oben1_Local +SE_T_1_81_Calib;
+
+T_DK_Band_oben3_Local:=T_DK_Band_oben3_IN/10.0;(*SE-T 1.83*)
+T_DK_Band_oben3_Visu:=T_DK_Band_oben3_Local +SE_T_1_83_Calib;
+
+T_DK_Band_unten1_Local:=T_DK_Band_unten1_IN/10.0;(*SE-T  1.91*)
+T_DK_Band_unten1_Visu:=T_DK_Band_unten1_Local +SE_T_1_91_Calib;
+
+T_DK_Band_unten3_Local:=T_DK_Band_unten3_IN/10.0;(*SE-T 1.93*)
+T_DK_Band_unten3_Visu:=T_DK_Band_unten3_Local +SE_T_1_93_Calib;
+
+T_DK_Steigband1_Local:=T_DK_Steigband1_IN/10.0;(*SE-T 3.81*)
+T_DK_Steigband1_Visu:=T_DK_Steigband1_Local +SE_T_3_81_Calib;
+
+T_DK_Steigband2_Local:=T_DK_Steigband2_IN/10.0;(*SE-T 3.82*)
+T_DK_Steigband2_Visu:=T_DK_Steigband2_Local +SE_T_3_82_Calib;
+
+T_DK_Steigband3_Local:=T_DK_Steigband3_IN/10.0;(*SE-T 3.83*)
+T_DK_Steigband3_Visu:=T_DK_Steigband3_Local +SE_T_3_83_Calib;
+
+T_DK_Steigband4_Local:=T_DK_Steigband4_IN/10.0;(*SE-T 3.84*)
+T_DK_Steigband4_Visu:=T_DK_Steigband4_Local +SE_T_3_84_Calib;
+
+
+
+
+
+
+P_Vor_WT_Local:=((P_Vor_WT_IN*1600.0)/32767); (*SEP1.11 STS 160m0barü + ABs Amb*)
+P_Vor_WT_Visu:=P_Vor_WT_Local+SE_P_1_11_Calib;
+
+
+P_nach_WT_Local:=(P_nach_WT_IN*1600.0)/32767;(*SE-P 1.12  STS 1600mbara*)
+P_nach_WT_Visu:=P_nach_WT_Local+SE_P_1_12_Calib;
+
+
+
+P_Komp_Einlass_Local:=(P_Komp_Einlass_IN*2500.0)/32767;(*SE-P 2.11 STS 2500mbara**)
+P_Komp_Einlass_Visu:=P_Komp_Einlass_local+SE_P_2_11_Calib;
+
+
+P_Komp_Auslass_Local:=((P_Komp_Auslass_IN*6000.0)/32767);(*SE-P 2.12 STS 6000mbarü + Abs Amb**)
+P_Komp_Auslass_Visu:=P_Komp_Auslass_Local+SE_P_2_12_Calib;
+
+
+P_Kond_Auslass_Local:=((P_Kond_Auslass_IN*6000.0)/32767);(*SE-P 2.13 STS 6000mbarü + Abs Amb*)
+P_Kond_Auslass_Visu:=P_Kond_Auslass_Local+SE_P_2_13_Calib;
+
+
+
+P_Abs_Amb_Visu:=(P_Abs_Amb_IN*2500.0)/32767;(*SE-P 2.14  STS 2500mbara*)
+
+
+
+
+W_Kond_Wasser_Visu:=DINT_TO_REAL((W_Kond_Wasser_IN*50000)/32767);(*SE-W 2.31 50000 = g*)
+
+O2_Visu:=(O2_IN*21.0)/32767;(*SE-O2 1.51    25=%O2*)
+
+//DWichtig ist, dass die Heizung der Lambdasensor nur dann ausgeschaltet wird, wenn er dtrocken ist, bezw. kein Dampf mehr in der Kammer ist, desshalb die überprüfung mit mind. 18%
+
+IF O2_Visu < 18.0 THEN
+	DO_not_turn_off_Heating_O2_Sensor:=TRUE;
+	ELSE
+	DO_not_turn_off_Heating_O2_Sensor:=FALSE;
+END_IF;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IF PTC_IN = FALSE THEN
+Motor_HOT:=TRUE;
+ELSE
+Motor_HOT:=FALSE;
+END_IF;
+
+
+
+
+(*Formeln&Berechnungen*)
+
+
+
+
+
+Ps_203:=(-0.00002405*( T_Kond_Auslass_Visu*T_Kond_Auslass_Visu)+(0.000950471* T_Kond_Auslass_Visu)+6.1226)*EXP((17.62* T_Kond_Auslass_Visu)/(243.15+T_Kond_Auslass_Visu));
+
+
+
+Ps_202:=(-0.00002405*( T_Komp_Auslass_Visu*T_Komp_Auslass_Visu)+(0.000950471* T_Komp_Auslass_Visu)+6.1226)*EXP((17.62* T_Komp_Auslass_Visu)/(243.15+ T_Komp_Auslass_Visu));
+
+
+ 
+
+//PS203 analog zu PS202 einfach auf den Temperatursensor SE_T_2_03 bezogen.
+
+ 
+
+
+//% volume fraction of air
+
+volFracAir202:=((P_Komp_Auslass_Visu/1000.0)-Ps_202)/F_NotZero(P_Komp_Auslass_Visu)*100.0;
+
+volFracAir203:=((P_Kond_Auslass_Visu/1000.0)-Ps_203)/F_NotZero(P_Kond_Auslass_Visu)*100.0;
+
+ 
+volFracAirO2:=O2_Visu*4.77;
+
+
+
+
+
+
+
+(*_______________________________________Not-Aus-Relais-________________________________________________*)
+
+
+(*Error summen*)
+
+Main_Relais:=(NOT Switch_OFF_Mainswitch AND Main_Relais   ) OR Start_Mainswitch;
+
+F_TRIG20(CLK:= Switch_OFF_Mainswitch , Q=>Start_Auto_Export );
+
+TP30(IN:=Start_Auto_Export , PT:= t#3S, Q=> Start_Auto_Export_OUT , ET=> );
+
+
+
+
+IF RESET_ERROR_Mainswitch THEN
+ERROR_Mainswitch:=FALSE;
+Main_Relais:=FALSE;
+IN_T1:=FALSE;
+IN_T2:=FALSE;
+END_IF;
+
+IF  Main_Relais = FALSE  THEN
+ERROR_Mainswitch:=FALSE;
+C_NOT_AUS:=0;
+IN_T1:=FALSE;
+IN_T2:=FALSE;
+END_IF;
+
+CASE C_NOT_AUS OF
+
+	0:	IN_T1:=FALSE;
+		IN_T2:=FALSE;
+		Mainswitch_OK:=FALSE;
+		C_NOT_AUS:=1;
+
+	1: 	IF  Main_Relais THEN
+
+		IN_T1:=TRUE;
+		IN_T2:=TRUE;
+		C_NOT_AUS:=2;
+		ELSE
+		C_NOT_AUS:=1;
+		END_IF
+
+	2:
+		IN_T1:=FALSE;
+		C_NOT_AUS:=3;
+
+	3: 	IF Feedback_Mainswitch AND OUT_T2 THEN
+
+		Mainswitch_OK:=TRUE;
+		Switch_Heat_group1:=TRUE;
+		Switch_Heat_group2 :=TRUE;
+		Switch_Heat_group3 :=TRUE;
+
+		(*ELSE IF Feedback_Mainswitch = FALSE THEN
+		Mainswitch_OK:=FALSE;*)
+		ELSE IF  Feedback_Mainswitch = FALSE AND OUT_T2  THEN
+		C_NOT_AUS:=6;
+		END_IF
+		END_IF
+
+
+	(*4:	Mainswitch_OK:=TRUE;*)
+
+	6:	IN_T2:=FALSE;
+		ERROR_Mainswitch:=TRUE;
+
+
+		Mainswitch_OK:=FALSE;
+		C_NOT_AUS:=7;	(*Zurzeit fertig*)
+
+
+
+	100: C_NOT_AUS:=0;
+
+END_CASE
+
+OUT_Mainswitch:=OUT_T1;
+
+
+
+
+
+
+	(*Wenn Not-Aus gedrückt wurde, werden folgende Werte zurückgesetzt*)
+
+
+
+	(* NOT-AUS*)
+
+
+	IF Mainswitch_OK = FALSE THEN
+
+	C_DES:=100;
+	C_ADS:=100;
+
+
+	Setpoint_Fan_Visu:=0;
+	Setpoint_Compressor_Visu:=0;
+	Setpoint_M_Belt_Feeder_Visu:=0;
+	Setpoint_Belts_Visu_TOP:=0;
+	Setpoint_SteamFan_Visu:=0;
+
+
+
+
+	FAN_Switch_ON:=FALSE;
+	FAN_ON:=FALSE;
+	FAN_Switch_ON_Manu:=FALSE;
+	FAN_ON_Manu:=FALSE;
+
+	Compressor_Switch_ON:=FALSE;
+	Compressor_ON:=FALSE;
+	Compressor_Switch_ON_manu:=FALSE;
+	Compressor_ON_manu:=FALSE;
+
+	Compressor_cooling_manu :=FALSE;
+	Compressor_cooling_auto :=FALSE;
+	Compressor_cooling :=FALSE;
+
+	SteamFAN_Switch_ON:=FALSE;
+	SteamFAN_Switch_ON_Manu:=FALSE;
+	SteamFan_ON:=FALSE;
+	SteamFan_ON_manu:=FALSE;
+
+
+	Belts_ON_TOP:=FALSE;
+	Belts_TOP_Switch_ON:=FALSE;
+	Belts_TOP_Switch_ON_Manu:=FALSE;
+	Belts_ON_TOP_Manu:=FALSE;
+	
+	Belts_bottom_ON:=FALSE;
+	Belts_bottom_Switch_ON:=FALSE;
+	Belts_bottom_Switch_ON_Manu:=FALSE;
+	Belts_ON_bottom_Manu:=FALSE;
+
+
+	M_Belt_Feeder_ON:=FALSE;
+	M_Belt_Feeder_Switch_ON:=FALSE;
+	M_Belt_Feeder_Switch_ON_Manu:=FALSE;
+	M_Belt_Feeder_ON_Manu:=FALSE;
+
+
+
+
+	Control_Manu_active:=FALSE;
+	Control_Auto_active:=FALSE;
+
+	
+	MAIN_ON_Switch_Light1:=FALSE;
+	MAIN_ON_Switch_Light_visu:=FALSE;
+	MAIN_ON_Switch_Light2:=FALSE;
+			
+	MAIN_ON_STEAM_GEN:=FALSE;
+	ELSE
+
+
+
+
+
+
+
+
+(*Hier beginnt die eigentliche Programmbearbeitung*)
+
+
+
+
+
+
+(*Einschalten von Haupt- und Motorrelais*)
+
+(* zurzeit nicht verwendeT
+
+
+Main_Relais:=(NOT Reset_M_R AND  Main_Relais AND NOT_AUS) OR Set_M_R;
+
+*)
+
+Cabinet_OK:=VDC_24_OK; (* AND---*)
+
+
+
+
+(* Manu / Auto Umschaltung *)
+
+
+
+(*Manu/Automodeumschaltung*)
+
+(*Manu/Automodeumschaltung*)
+
+(*Start_Man:=(NOT Reset_man AND Start_Man) OR Set_Man;*)
+
+(* vom Automodus soll man nicht direkt in den Manu Modus schalten können, zuerst muss man den automodus stoppen*)
+
+Control_Manu_active:=(NOT( Reset_man OR Control_Auto ) AND Control_Manu_active AND Mainswitch_OK) OR Control_Manu;
+Control_Auto_active:=(NOT Reset_Auto AND Control_Auto_active AND Mainswitch_OK) OR Control_Auto;
+
+
+
+(*_________________________________________________________________________________________CONTROL___Manu____________________________________________*)
+
+
+
+IF Control_Manu_active THEN
+
+
+
+(*
+	(*FAN*)
+
+	Setpoint_Fan_IN:= Setpoint_Fan_Visu;
+
+	FAN_Switch_ON:=FAN_Switch_ON_Manu;
+	FAN_ON:=FAN_ON_Manu;
+*)
+
+
+	
+	
+	
+	
+	
+
+	(* _____________________________________________Horizontalbandförderer _____________________________________________*)
+
+
+	IF Activate_controller_Belts_TOP THEN
+	Setpoint_Belts_TOP_IN:=REAL_TO_INT(fStellwert_Belts_TOP);
+	Setpoint_Belts_bottom_IN:=REAL_TO_INT(fStellwert_Belts_bottom);
+	ELSE
+	Setpoint_Belts_TOP_IN:=REAL_TO_INT((Setpoint_Belts_Visu_TOP/1400.0)*100.0);
+	Setpoint_Belts_bottom_IN:=REAL_TO_INT((Setpoint_Belts_Visu_bottom/1400.0)*100.0);
+	END_IF;
+
+	
+	Belts_TOP_Switch_ON:=Belts_TOP_Switch_ON_Manu;
+	Belts_bottom_Switch_ON:=Belts_bottom_Switch_ON_Manu;
+
+
+	Setpoint_Belts_Visu_TOP:=REAL_TO_INT(Setpoint_Belts_Visu_TOP_1_min*Uebersetzung_Schneckengetriebe);
+	Setpoint_Belts_Visu_bottom:=REAL_TO_INT(Setpoint_Belts_Visu_bottom_1_min*Uebersetzung_Schneckengetriebe);
+
+
+	(* Es sollen 2 Varianten getestet werden mit einer Impulsfahrt des Horizontalförderers:
+	Hautptproblem ist, dass eine zu langsame Geschw. auf ein Stocken des Motors resultiert, dessahlb soll
+	1. Ein Versuch mit einer Pulsartigen Freigabe des FU's getestet werden
+	2. Ein Versuch mit Pulsartiger hch-runterfahrrampe getestet werden!
+	*)
+	
+	
+	
+	
+	
+	//VAriante 1 mal nur mit dem Horizontalförderer
+	
+	
+	//Wichtig!! zuerst noch testen, ob der Frequenzeingang so weit noch unten geht: 0.01HZ = 100Sek.
+		
+	IF Switch_ON_Main_Belt_PWM THEN
+			
+
+	
+	Main_Belt_PWMDutyCycle_out:=(Main_Belt_PWMDutyCycle_VISU/100.0);
+	
+	//KOntrolle zur sicherheits, dass PWM-Signal nicht zu kurz pulst, wenn z.b  100 Sek, = 100%, dann nicht unter 20%
+	
+		IF Main_Belt_PWMDutyCycle_out < 0.2 THEN 
+			Main_Belt_PWMDutyCycle_out:=0.2;
+		END_IF
+	
+	Move_M_Belts_PWM(
+		CI:=Main_Belt_PWMDutyCycle_out, 
+		MAN_IN:= , 
+		MANUAL:= , 
+		F:=Base_Frequence_Main_Belt , 
+		Q=> Main_Belt_PWM_OUT);
+		
+		
+	Belts_ON_TOP_manu:= Main_Belt_PWM_OUT;
+	Belts_ON_bottom_manu:= Main_Belt_PWM_OUT;
+		
+	END_IF;
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	(*  _____________________________________________Steigförderer _____________________________________________*)
+	
+	IF Activate_controller_M_Belt_Feeder THEN
+	Setpoint_M_Belt_Feeder_IN:=REAL_TO_INT(fStellwert_M_Belt_Feeder);
+	ELSE
+	Setpoint_M_Belt_Feeder_IN:=REAL_TO_INT((Setpoint_M_Belt_Feeder_Visu/1400.0)*100.0);
+	END_IF;
+
+	
+	
+	
+
+	M_Belt_Feeder_Switch_ON:=M_Belt_Feeder_Switch_ON_Manu;
+	
+
+	
+	Setpoint_M_Belt_Feeder_Visu:=REAL_TO_INT(Setpoint_M_Belts_Feeder_Visu_1_min*Uebersetzung_Schneckengetriebe);
+
+
+
+
+			
+	IF Switch_ON_Feeder_Belt_PWM THEN		
+			
+	//M_Belt_Feeder_ON_Manu:=FALSE;
+
+	
+	Feeder_Belt_PWMDutyCycle_out:=(Feeder_Belt_PWMDutyCycle_VISU/100.0);		
+			
+	//KOntrolle zur sicherheits, dass PWM-Signal nicht zu kurz pulst, wenn z.b  100 Sek, = 100%, dann nicht unter 20%		
+			
+		IF Feeder_Belt_PWMDutyCycle_out < 0.2 THEN 	
+			Feeder_Belt_PWMDutyCycle_out:=0.2;
+		END_IF	
+			
+	Move_M_Belts_PWM(		
+		CI:=Feeder_Belt_PWMDutyCycle_out, 	
+		MAN_IN:= , 	
+		MANUAL:= , 	
+		F:=Base_Frequence_Feeder_Belt , 	
+		Q=> Feeder_Belt_PWM_OUT);	
+			
+			
+//	M_Belt_Feeder_ON_Manu:= Feeder_Belt_PWM_OUT;		
+			
+			
+(*	ELSE		
+		
+	M_Belt_Feeder_ON:=M_Belt_Feeder_ON_Manu;*)
+			
+	END_IF;		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	(* Neu weiter oben!!!!
+	IF Activate_controller_comp THEN
+	Setpoint_Compressor_IN:=REAL_TO_INT(fStellwert_comp);
+	ELSIF	
+	Setpoint_Compressor_IN:=Setpoint_Compressor_Visu;
+	END_IF*)
+
+
+	
+	Compressor_Switch_ON:=Compressor_Switch_ON_Manu;
+	Compressor_ON:=Compressor_ON_Manu;
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	(* NEU weiter oben !!!!
+	IF Activate_controller_V_Umdampf  THEN
+	Setpoint_SteamFan_IN:=REAL_TO_INT(fStellwert_V_Umdampf);
+	ELSE
+	Setpoint_SteamFan_IN:= Setpoint_SteamFan_Visu;
+	END_IF*)
+
+	
+	SteamFAN_Switch_ON:=SteamFAN_Switch_ON_manu;
+	SteamFan_ON:=SteamFan_ON_manu;
+
+
+
+
+
+
+
+	(* Wichtig!!! Hier werden beim einschalten in Manubetrieb für einen Puls die Ventile in die Startposition gesteuert*)
+
+
+		Start_Puls_Valves:=TRUE;
+		R_TRIG13(CLK:=Start_Puls_Valves , Q=>Start_Puls_Valves_out );
+		
+		IF Start_Puls_Valves_out  THEN
+
+		V_Dampf_nach_Komp_manu:=FALSE; (*VE_K2.71*)
+		V_Nach_WT_manu:=FALSE;  (*VE_K2.73*)
+		V_Entlueftung_1_manu:=FALSE;  (*VExx*)
+		V_Entlueftung_2_manu:=FALSE;  (*VExx*)
+		V_Global_Res_3_manu:=FALSE;  (*VExx*)
+		V_Global_Res_4_manu:=FALSE;  (*VExx*)
+		V_Global_Res_5_manu:=FALSE;  (*VExx*)
+
+		END_IF;
+
+
+
+	MAIN_ON_Switch_Light1:=MAIN_ON_Switch_Light_visu;
+	MAIN_ON_Switch_Light2:=MAIN_ON_Switch_Light_visu;	
+		
+		
+		
+		
+		
+		
+	(*Wichtig!! Zurzeit ist ganz unten die verknüpfen von den Ventil-Ausgängen. Dort werden die Sequence und Manu Befehle als SR-Glied zusammengefasst*)
+
+
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+(*_________________________________________________________________________________________CONTROL___AUTO____________________________________________*)
+ ELSE IF Control_Auto_active THEN
+
+
+Compressor_cooling:=Compressor_cooling_auto;
+
+(*MAcht meiner Meinung nach zurzeit keinen Sinn die Reglersollwerte im OP Auto glechzusetzten wie im MANU OP, einfach mit aktiviertem Controller-Switch*)
+(*
+Setpoint_Compressor_IN:=REAL_TO_INT(fStellwert_comp); (*1.  ev noch die Ausgangsvariablen auf REAL setzten bezgtl  Genauigkeit			2. Setpoint_Compressor_Auto;___zurzeit nicht benötigt*)
+Setpoint_Primaer_Comp_IN:=REAL_TO_INT(fStellwert_Primaer_Comp);
+
+
+
+Setpoint_Fan_IN:=Setpoint_Fan_Auto;
+Setpoint_SteamFan_IN:=Setpoint_SteamFan_Auto;
+
+
+Setpoint_Belts_TOP_IN:=Setpoint_M_Belts_Auto;
+Setpoint_M_Belt_Feeder_IN:=Setpoint_M_Belt_Feeder_Auto;
+
+Steamgenerator:=Steamgenerator_auto;
+*)
+
+
+
+HEAT_Reg_Mainswitch_out:=HEAT_Reg_Mainswitch_auto;
+
+
+
+
+
+
+
+
+
+
+
+V_Dampf_nach_Komp:=V_Dampf_nach_Komp_auto;
+V_Nach_WT:=V_Nach_WT_auto;
+V_Entlueftung_1:=V_Entlueftung_1_auto;
+V_Entlueftung_2:=V_Entlueftung_2_auto;
+V_Global_Res_3:=V_Global_Res_3_auto;
+V_Global_Res_4:=V_Global_Res_4_auto;
+V_Global_Res_5:=V_Global_Res_5_auto;
+
+
+
+
+
+
+
+ELSE
+
+
+	Start_Puls_Valves:=FALSE;
+	Heat_matt1_manu:=FALSE;
+	Heat_matt2_manu:=FALSE;
+	Heat_matt3_manu:=FALSE;
+	Heat_matt4_manu:=FALSE;
+	Heat_matt5_manu:=FALSE;
+	Heat_matt6_manu:=FALSE;
+	Heat_matt7_manu:=FALSE;
+	Heat_matt8_manu:=FALSE;
+	Heat_matt9_manu:=FALSE;
+	Heat_matt10_manu:=FALSE;
+	Heat_matt1_auto:=FALSE;
+	Heat_matt2_auto:=FALSE;
+	Heat_matt3_auto:=FALSE;
+	Heat_matt4_auto:=FALSE;
+	Heat_matt5_auto:=FALSE;
+	Heat_matt6_auto:=FALSE;
+	Heat_matt7_auto:=FALSE;
+	Heat_matt8_auto:=FALSE;
+	Heat_matt9_auto:=FALSE;
+	Heat_matt10_auto:=FALSE;
+	
+	Heat_matt_Group1_1_4_auto:=FALSE;
+	Heat_matt_Group2_5_8_auto:=FALSE;
+	Heat_matt_Group3_9_10_auto:=FALSE;
+	
+	Heat_matt1:=FALSE;
+	Heat_matt2:=FALSE;
+	Heat_matt3:=FALSE;
+	Heat_matt4:=FALSE;
+	Heat_matt5:=FALSE;
+	Heat_matt6:=FALSE;
+	Heat_matt7:=FALSE;
+	Heat_matt8:=FALSE;
+	Heat_matt9:=FALSE;
+	Heat_matt10:=FALSE;
+	
+	Heat_matt_Group1_1_4:=FALSE;
+	Heat_matt_Group2_5_8:=FALSE;
+	Heat_matt_Group3_9_10:=FALSE;
+
+
+
+
+	HEAT_Reg_1_OUT:=FALSE;
+	HEAT_Reg_2_OUT:=FALSE;
+	HEAT_Reg_3_OUT:=FALSE;
+	HEAT_Reg_4_OUT:=FALSE;
+	HEAT_Reg_5_OUT:=FALSE;
+	HEAT_Reg_6_OUT:=FALSE;
+	HEAT_Reg_7_OUT:=FALSE;
+	HEAT_Reg_8_OUT:=FALSE;
+
+
+
+
+	HEAT_Reg_Mainswitch_out:=FALSE;
+
+	HEAT_Reg_1_auto:=FALSE;
+	HEAT_Reg_2_auto:=FALSE;
+	HEAT_Reg_3_auto:=FALSE;
+	HEAT_Reg_4_auto:=FALSE;
+	HEAT_Reg_5_auto:=FALSE;
+	HEAT_Reg_6_auto:=FALSE;
+	HEAT_Reg_7_auto:=FALSE;
+	HEAT_Reg_8_auto:=FALSE;
+
+
+
+	HEAT_Reg_Mainswitch_auto:=FALSE;
+
+	HEAT_Reg_1_Manu:=FALSE;
+	HEAT_Reg_2_OUT:=FALSE;
+	HEAT_Reg_3_OUT:=FALSE;
+	HEAT_Reg_4_Manu:=FALSE;
+	HEAT_Reg_5_Manu:=FALSE;
+	HEAT_Reg_6_Manu:=FALSE;
+	HEAT_Reg_7_Manu:=FALSE;
+	HEAT_Reg_8_Manu:=FALSE;
+
+
+	HEAT_Reg_Mainswitch_Manu:=FALSE;
+
+
+
+
+	bManuHeat_REG1_CTRL:=FALSE;
+	bManuHeat_REG2_CTRL:=FALSE;
+	bManuHeat_REG3_CTRL :=FALSE;
+	bManuHeat_REG4_CTRL :=FALSE;
+	bManuHeat_REG5_CTRL:=FALSE;
+	bManuHeat_REG6_CTRL:=FALSE;
+	bManuHeat_REG7_CTRL :=FALSE;
+	bManuHeat_REG8_CTRL :=FALSE;
+
+
+	(*bManu_Heat_EinschraubHZK1_CTRL:=FALSE;
+	bManu_Heat_EinschraubHZK2_CTRL:=FALSE;
+	bManu_Heat_EinschraubHZK3_CTRL:=FALSE;
+	bManu_Heat_REG_Comp:=FALSE;*)
+
+
+
+
+
+
+
+
+	V_Dampf_nach_Komp:=FALSE;
+	V_Nach_WT:=FALSE;
+	V_Entlueftung_1:=FALSE;
+	V_Entlueftung_2:=FALSE;
+	V_Global_Res_3:=FALSE;
+	V_Global_Res_4:=FALSE;
+	V_Global_Res_5:=FALSE;
+
+
+
+	V_Dampf_nach_Komp_auto:=FALSE;
+	V_Nach_WT_auto:=FALSE;
+	V_Entlueftung_1_auto:=FALSE;
+	V_Entlueftung_2_auto:=FALSE;
+	V_Global_Res_3_auto:=FALSE;
+	V_Global_Res_4_auto:=FALSE;
+	V_Global_Res_5_auto:=FALSE;
+
+
+	V_Dampf_nach_Komp_manu:=FALSE;
+	V_Nach_WT_manu:=FALSE;
+	V_Entlueftung_1_manu:=FALSE;
+	V_Entlueftung_2_manu:=FALSE;
+	V_Global_Res_3_manu:=FALSE;
+	V_Global_Res_4_manu:=FALSE;
+	V_Global_Res_5_manu:=FALSE;
+
+
+
+
+	FAN_Switch_ON:=FALSE;
+	FAN_ON:=FALSE;
+	FAN_Switch_ON_Manu:=FALSE;
+	FAN_ON_Manu:=FALSE;
+
+	Compressor_Switch_ON:=FALSE;
+	Compressor_ON:=FALSE;
+	Compressor_Switch_ON_manu:=FALSE;
+	Compressor_ON_manu:=FALSE;
+
+	Compressor_cooling_manu :=FALSE;
+	Compressor_cooling_auto :=FALSE;
+	Compressor_cooling :=FALSE;
+
+	SteamFAN_Switch_ON:=FALSE;
+	SteamFAN_Switch_ON_Manu:=FALSE;
+	SteamFan_ON:=FALSE;
+	SteamFan_ON_manu:=FALSE;
+
+
+	Belts_ON_TOP:=FALSE;
+	Belts_TOP_Switch_ON:=FALSE;
+	Belts_TOP_Switch_ON_Manu:=FALSE;
+	Belts_ON_TOP_Manu:=FALSE;
+	Belts_ON_bottom_Manu:=FALSE;
+
+	M_Belt_Feeder_ON:=FALSE;
+	M_Belt_Feeder_Switch_ON:=FALSE;
+	M_Belt_Feeder_Switch_ON_Manu:=FALSE;
+	M_Belt_Feeder_ON_Manu:=FALSE;
+
+
+
+END_IF
+END_IF
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*___________________________________________________Allg. Hysteresen_________________________________________________________________*)
+
+
+
+
+
+
+
+(*Hyterese Temp. Kompressor*)
+IF Temp_compressor_Self > Limit_Temp_Compressor THEN IN_T100:=TRUE; ELSE IF Temp_compressor_Self < Limit_Temp_Compressor THEN IN_T100:=FALSE; END_IF END_IF
+IF OUT_T100 THEN Temp_compressor_OK:=TRUE; ELSE Temp_compressor_OK:=FALSE; END_IF
+
+(*
+(*Hyterese Temp. Verdampfegehäuse  Es wird der Durchschnitt aller 4 Temp. sensoren abgefragt*)
+IF Temp_Cabinet_averange > Limit_Temp_Cabinet  THEN IN_T102:=TRUE; ELSE IF Temp_Cabinet_averange < Limit_Temp_Cabinet THEN IN_T102:=FALSE; END_IF END_IF
+IF OUT_T102 THEN Temp_Cabinet_OK:=TRUE; ELSE Temp_Cabinet_OK:=FALSE; END_IF
+
+(*Hyterese Gehäuse abkühlern*)
+IF Temp_Cabinet_averange < Limit_Temp_cooling_Cabinet  THEN IN_T103:=TRUE; ELSE IF Temp_Cabinet_averange   > Limit_Temp_cooling_Cabinet  THEN IN_T103:=FALSE; END_IF END_IF
+IF OUT_T103 THEN Cooling_OK:=TRUE; ELSE Cooling_OK:=FALSE; END_IF
+
+*)
+
+
+(*Heizmatten 1-10*)
+
+
+
+Hyst1(Hyst_Value:=Temp_Heatmatt1 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt, Hyst_OUT=> Heat_Matt11_OK_for_heat );
+Hyst2(Hyst_Value:=Temp_Heatmatt2 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt2_OK_for_heat );
+Hyst3(Hyst_Value:=Temp_Heatmatt3 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt3_OK_for_heat );
+Hyst4(Hyst_Value:=Temp_Heatmatt4 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt4_OK_for_heat );
+Hyst5(Hyst_Value:=Temp_Heatmatt5 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt5_OK_for_heat );
+Hyst6(Hyst_Value:=Temp_Heatmatt6 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt6_OK_for_heat );
+Hyst7(Hyst_Value:=Temp_Heatmatt7 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt7_OK_for_heat );
+Hyst8(Hyst_Value:=Temp_Heatmatt8 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt8_OK_for_heat );
+Hyst9(Hyst_Value:=Temp_Heatmatt9 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt9_OK_for_heat );
+Hyst10(Hyst_Value:=Temp_Heatmatt10 , Hyst_Low_Limit:=Hyst_low_LIM_Heatmatt , Hyst_Hight_Limit:=Hyst_high_LIM_Heatmatt , Hyst_OUT=> Heat_Matt10_OK_for_heat );
+
+
+
+(*IF Temp_Heatmatt1> 120 THEN Heat_matt1:=FALSE; END_IF
+IF Temp_Heatmatt2> 120 THEN Heat_matt2:=FALSE; END_IF
+IF Temp_Heatmatt3> 120 THEN Heat_matt3:=FALSE; END_IF
+IF Temp_Heatmatt4> 120 THEN Heat_matt4:=FALSE; END_IF
+IF Temp_Heatmatt5> 120 THEN Heat_matt5:=FALSE; END_IF
+IF Temp_Heatmatt6> 120 THEN Heat_matt6:=FALSE; END_IF
+IF Temp_Heatmatt7> 120 THEN Heat_matt7:=FALSE; END_IF
+IF Temp_Heatmatt8> 120 THEN Heat_matt8:=FALSE; END_IF
+IF Temp_Heatmatt9> 120 THEN Heat_matt9:=FALSE; END_IF
+IF Temp_Heatmatt10> 120 THEN Heat_matt10:=FALSE; END_IF
+
+*)
+
+
+
+END_IF
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*Zusätzliches*)
+
+
+
+(*Ventilmatrix*)
+
+(*
+IF Valvematrix.0 =TRUE THEN Valve_YB1:=TRUE; ELSE Valve_YB1:=FALSE;END_IF;
+IF Valvematrix.1 =TRUE THEN Valve_YB2:=TRUE; ELSE Valve_YB2:=FALSE; END_IF;
+IF Valvematrix.2 =TRUE THEN Valve_YB3:=TRUE; ELSE Valve_YB3:=FALSE; END_IF;
+IF Valvematrix.3 =TRUE THEN Valve_YB4:=TRUE; ELSE Valve_YB4:=FALSE; END_IF;
+IF Valvematrix.4 =TRUE THEN Valve_YB6:=TRUE; ELSE Valve_YB6:=FALSE; END_IF;
+IF Valvematrix.5 =TRUE THEN Valve_YB7:=TRUE; ELSE Valve_YB7:=FALSE; END_IF;
+IF Valvematrix.6 =TRUE THEN Valve_YB8:=TRUE; ELSE Valve_YB8:=FALSE; END_IF;
+Valve_YB9:=Valvematrix2.0;
+Valve_YB10:=Valvematrix2.1;
+*)
+
+
+
+IF All_Heater_on_auto THEN
+Heat_matt1_auto:=TRUE;
+Heat_matt2_auto:=TRUE;
+Heat_matt3_auto:=TRUE;
+Heat_matt4_auto:=TRUE;
+Heat_matt5_auto:=TRUE;
+Heat_matt6_auto:=TRUE;
+Heat_matt7_auto:=TRUE;
+Heat_matt8_auto:=TRUE;
+Heat_matt9_auto:=TRUE;
+Heat_matt10_auto:=TRUE;
+END_IF;
+
+
+
+
+
+
+
+
+
+(*
+
+Info: Zurzeit brauchts diese Modbus-Variablenzuweisung noch nicht, es wird versucht diesmal auf TC3 umzustellen inkl. Visu
+
+WIchtig!!! Die Bez. IN OUT ist aus versehen verkehrt!!!!*)
+
+
+
+
+
+(*
+
+
+(*Modbusvariablenzuweiseung*)
+
+
+
+ (*SPS seitig Eingänge*)
+
+(*Binär:*)
+
+(*Main_ON:=mb_Output_Coils[0];*)
+
+(*Analog:*)
+
+
+	Register_IN1:=mb_Output_Registers[0];
+	Register_IN2:=mb_Output_Registers[1];
+	Register_IN3:=mb_Output_Registers[2];
+	Register_IN4:=mb_Output_Registers[3];
+	Register_IN5:=mb_Output_Registers[4];
+	Register_IN6:=mb_Output_Registers[5];
+	Register_IN7:=mb_Output_Registers[6];
+	Register_IN8:=mb_Output_Registers[7];
+	Register_IN9:=mb_Output_Registers[8];
+	Register_IN10:=mb_Output_Registers[9];
+
+
+ (*SPS seitig Ausgänge*)
+
+(*Binär:*)
+
+mb_Input_Coils[0]:=V_Dampf_nach_Komp;
+mb_Input_Coils[1]:=V_Nach_WT;
+mb_Input_Coils[2]:=V_Entlueftung_1;
+mb_Input_Coils[3]:=V_Entlueftung_2;
+mb_Input_Coils[4]:=V_Global_Res_3;
+mb_Input_Coils[5]:=V_Global_Res_4;
+mb_Input_Coils[6]:=V_Global_Res_5;
+mb_Input_Coils[7]:=V_Wasserauslass;
+mb_Input_Coils[8]:=V_Dichtringe_Einlass;
+mb_Input_Coils[9]:=V_Dichtringe_Auslass;
+mb_Input_Coils[10]:=Compressor_PT100_Error;
+
+
+
+
+
+
+(*Analog:*)
+
+mb_Input_Registers[0]:=0;
+mb_Input_Registers[1]:=0;
+mb_Input_Registers[2]:=0;
+mb_Input_Registers[3]:=0;
+mb_Input_Registers[4]:=0;
+mb_Input_Registers[5]:=0;
+mb_Input_Registers[6]:=0;
+mb_Input_Registers[7]:=0;
+mb_Input_Registers[8]:=0;
+mb_Input_Registers[9]:=0;
+mb_Input_Registers[10]:=REAL_TO_INT(T_Vor_DecicWheel*100);		(*Zur Info::: Zurzeit sollen NUR die Temps mit Faktor 100 transferiert werden, da sonst bei den Drücken mit Milibarausdruck ein Overflow des Wertes wäre*)
+mb_Input_Registers[11]:=REAL_TO_INT(T_Nach_DecicWheel*100);
+mb_Input_Registers[12]:=REAL_TO_INT(T_Des_nach_V_Umdampf*100);
+mb_Input_Registers[13]:=REAL_TO_INT(T_Des_nach_WT*100);
+mb_Input_Registers[14]:=REAL_TO_INT(T_Des_vor_DecicWheel*100);
+mb_Input_Registers[15]:=REAL_TO_INT(T_comp_gehause*100);
+mb_Input_Registers[16]:=REAL_TO_INT(T_Dampfleitung_comp*100);
+mb_Input_Registers[17]:=REAL_TO_INT(T_Vor_KlauenkolbenKomp*100);(*T3.31*)
+mb_Input_Registers[18]:=REAL_TO_INT(T_Windfenster_IMDampf_oben*100);
+mb_Input_Registers[19]:=REAL_TO_INT(T_Windfenster_IMDampf_unten*100);
+mb_Input_Registers[20]:=REAL_TO_INT(9999);
+mb_Input_Registers[21]:=REAL_TO_INT(T_Wasserwanne*100);
+mb_Input_Registers[22]:=REAL_TO_INT(Temp_Heatmatt1*100);
+mb_Input_Registers[23]:=REAL_TO_INT(Temp_Heatmatt2*100);
+mb_Input_Registers[24]:=REAL_TO_INT(Temp_Heatmatt3*100);
+mb_Input_Registers[25]:=REAL_TO_INT(Temp_Heatmatt4*100);
+mb_Input_Registers[26]:=REAL_TO_INT(Temp_Heatmatt5*100);
+mb_Input_Registers[27]:=REAL_TO_INT(Temp_Heatmatt6*100);
+mb_Input_Registers[28]:=REAL_TO_INT(Temp_Heatmatt7*100);
+mb_Input_Registers[29]:=REAL_TO_INT(Temp_Heatmatt8*100);
+mb_Input_Registers[30]:=REAL_TO_INT(Temp_Heatmatt9*100);
+mb_Input_Registers[31]:=REAL_TO_INT(Temp_Heatmatt10*100);
+mb_Input_Registers[32]:=REAL_TO_INT(T_Ambiente*100);
+mb_Input_Registers[33]:=REAL_TO_INT(T_Einlass_Kompressor*100); 	(*SET 3.33*)
+mb_Input_Registers[34]:=REAL_TO_INT(T_Heizband_Filter2*100);
+mb_Input_Registers[35]:=REAL_TO_INT(T_Heizband_Filter3*100);
+mb_Input_Registers[36]:=REAL_TO_INT(T_Monitor_Heatreg1*100);
+mb_Input_Registers[37]:=REAL_TO_INT(T_Monitor_Heatreg2*100);
+mb_Input_Registers[38]:=0;
+mb_Input_Registers[39]:=0;
+mb_Input_Registers[40]:=REAL_TO_INT(RH_Vor_DecicWheel*100);
+mb_Input_Registers[41]:=REAL_TO_INT(RH_Nach_DecicWheel*100);
+mb_Input_Registers[42]:=REAL_TO_INT(RH_Des_nach_V_Umdampf*100);
+mb_Input_Registers[43]:=REAL_TO_INT(RH_Des_nach_WT*100);
+mb_Input_Registers[44]:=0;
+mb_Input_Registers[45]:=0;
+mb_Input_Registers[46]:=0;
+mb_Input_Registers[47]:=0;
+mb_Input_Registers[48]:=0;
+mb_Input_Registers[49]:=0;
+mb_Input_Registers[50]:=REAL_TO_INT(P_Des_nach_V_Umdampf);
+mb_Input_Registers[51]:=REAL_TO_INT(P_Des_nach_WT);
+mb_Input_Registers[52]:=REAL_TO_INT(P_Dampfleitung_comp);
+mb_Input_Registers[53]:=REAL_TO_INT(P_Vor_KlauenkolbenKomp);
+mb_Input_Registers[54]:=REAL_TO_INT(P_Windfenster_1);
+mb_Input_Registers[55]:=REAL_TO_INT(P_Windfenster_2);
+mb_Input_Registers[56]:=REAL_TO_INT(P_Drucklufttank);
+mb_Input_Registers[57]:=REAL_TO_INT(P_Sperrgasdichtung);
+mb_Input_Registers[58]:=REAL_TO_INT(P_Amb);
+mb_Input_Registers[59]:=REAL_TO_INT(P_Zwischenstufe_Kompressoren);
+mb_Input_Registers[60]:=REAL_TO_INT(Ps_311);
+mb_Input_Registers[61]:=REAL_TO_INT(Ps_26);
+mb_Input_Registers[62]:=REAL_TO_INT(Ps_28);
+mb_Input_Registers[63]:=0;
+mb_Input_Registers[64]:=0;
+mb_Input_Registers[65]:=0;
+mb_Input_Registers[66]:=0;
+mb_Input_Registers[67]:=0;
+mb_Input_Registers[68]:=0;
+mb_Input_Registers[69]:=0;
+mb_Input_Registers[70]:=REAL_TO_INT(RelP_TM*100);
+mb_Input_Registers[71]:=REAL_TO_INT(RelP_WT*100);
+mb_Input_Registers[72]:=REAL_TO_INT(RelP_OUT*100);
+mb_Input_Registers[73]:=0;
+mb_Input_Registers[74]:=0;
+mb_Input_Registers[75]:=0;
+mb_Input_Registers[76]:=0;
+mb_Input_Registers[77]:=0;
+mb_Input_Registers[78]:=0;
+mb_Input_Registers[79]:=0;
+mb_Input_Registers[80]:=REAL_TO_INT(Current_OUT_SteamVenti_L1*100);
+mb_Input_Registers[81]:=REAL_TO_INT(Current_OUT_SteamVenti_L2*100);
+mb_Input_Registers[82]:=REAL_TO_INT(Current_OUT_SteamVenti_L3*100);
+mb_Input_Registers[83]:=REAL_TO_INT(Current_OUT_HEAT_Reg_1*100);
+mb_Input_Registers[84]:=REAL_TO_INT(Current_OUT_HEAT_Reg_2*100);
+mb_Input_Registers[85]:=REAL_TO_INT(Current_OUT_HEAT_Reg_3*100);
+mb_Input_Registers[86]:=REAL_TO_INT(Current_OUT_HEAT_Reg_4*100);
+mb_Input_Registers[87]:=REAL_TO_INT(Current_OUT_Compressor_L1 *100);
+mb_Input_Registers[88]:=REAL_TO_INT(Current_OUT_Compressor_L2 *100);
+mb_Input_Registers[89]:=REAL_TO_INT(Current_OUT_Compressor_L3 *100);
+mb_Input_Registers[90]:=REAL_TO_INT(Current_OUT_Heatreg_1_TO_4 *100);
+mb_Input_Registers[91]:=REAL_TO_INT(Current_OUT_Heatreg_5_TO_8 *100);
+mb_Input_Registers[92]:=REAL_TO_INT(Current_OUT_Heatreg_Compressor *100);
+mb_Input_Registers[93]:=REAL_TO_INT(Current_OUT_Fan_L1*100);
+mb_Input_Registers[94]:=REAL_TO_INT(Current_OUT_Fan_L2 *100);
+mb_Input_Registers[95]:=REAL_TO_INT(Current_OUT_Fan_L3*100);
+mb_Input_Registers[96]:=REAL_TO_INT(Current_OUT_Complete_L1 *100);
+mb_Input_Registers[97]:=REAL_TO_INT(Current_OUT_Complete_L2 *100);
+mb_Input_Registers[98]:=REAL_TO_INT(Current_OUT_Complete_L3 *100);
+mb_Input_Registers[99]:=0;
+mb_Input_Registers[100]:=0;
+mb_Input_Registers[101]:=0;
+mb_Input_Registers[102]:=0;
+mb_Input_Registers[103]:=0;
+mb_Input_Registers[104]:=0;
+mb_Input_Registers[105]:=0;
+mb_Input_Registers[106]:=0;
+mb_Input_Registers[107]:=0;
+mb_Input_Registers[108]:=0;
+mb_Input_Registers[109]:=0;
+mb_Input_Registers[110]:=0;
+mb_Input_Registers[111]:=0;
+mb_Input_Registers[112]:=0;
+mb_Input_Registers[113]:=0;
+mb_Input_Registers[114]:=0;
+mb_Input_Registers[115]:=0;
+mb_Input_Registers[116]:=0;
+mb_Input_Registers[117]:=0;
+mb_Input_Registers[118]:=0;
+mb_Input_Registers[119]:=0;
+mb_Input_Registers[120]:=REAL_TO_INT(Compressor_Actual_Turn);
+mb_Input_Registers[121]:=REAL_TO_INT(SteamFan_Actual_Turn);	(*Muss dann wieder getauscgt werden, wenn ATV32 wieder für den Umdampfventi kommt*)
+mb_Input_Registers[122]:=REAL_TO_INT(FAN_Actual_Turn);
+
+*)
+
+	
+
+
+
+
+
+//_________________Versuch mit einer Automatikroutine zum Abgleichen der Druck-Sensoren,
+
+IF Set_Calib_preasure THEN
+	
+
+P_Array[1]:=P_Vor_WT_Local;
+P_Array[2]:=P_nach_WT_Local;
+P_Array[3]:=P_Komp_Einlass_local;
+P_Array[4]:=P_Komp_Auslass_Local;
+P_Array[5]:=P_Kond_Auslass_Local;
+
+FOR CountP := 1 TO 10 BY 1 DO
+P_calib[countP]:= P_Abs_Amb_Visu - P_Array[CountP];
+END_FOR;
+
+SE_P_1_11_Calib:=P_calib[1];
+SE_P_1_12_Calib:=P_calib[2];
+SE_P_2_11_Calib:=P_calib[3];
+SE_P_2_12_Calib:=P_calib[4];
+SE_P_2_13_Calib:=P_calib[5];
+
+END_IF;
+
+
+
+
+IF Reset_Calib_preasure THEN
+	
+FOR Countp := 1 TO 10 BY 1 DO
+P_calib[countp]:=0;
+END_FOR;
+
+
+SE_P_1_11_Calib:=0;
+SE_P_1_12_Calib:=0;
+SE_P_2_11_Calib:=0;
+SE_P_2_12_Calib:=0;
+SE_P_2_13_Calib:=0;
+
+
+
+END_IF;
+
+
+
+
+
+
+
+
+
+
+//_________________Versuch mit einer Automatikroutine zum Abgleichen der TC-Sensoren,
+
+
+
+
+//Referenz: SET3.01 
+
+IF Re_Calibrate_TC THEN
+	
+
+Temp_Array[1]:=T_Vor_WT_Local;
+Temp_Array[2]:=T_Nach_WT_Local;
+Temp_Array[3]:=T_HE_Einduesung_Oben_Local;
+Temp_Array[4]:=T_HE_Einduesung_Unten_Local;
+Temp_Array[5]:=T_Einduesung_Oben_Local;
+Temp_Array[6]:=T_Einduesung_Unten_Local;
+Temp_Array[7]:=T_Absaugung_Oben_Local;
+Temp_Array[8]:=T_Absaugung_Unten_Local;
+Temp_Array[9]:=T_Vor_UmdampfLuefter_Local;
+Temp_Array[10]:=T_Komp_Einlass_Local;
+Temp_Array[11]:=T_Komp_Auslass_Local;
+Temp_Array[12]:=T_Kond_Auslass_Local;
+Temp_Array[13]:=T_DK_oben_Local;
+Temp_Array[14]:=T_DK_mitte_Local;
+Temp_Array[15]:=T_DK_unten_Local;
+Temp_Array[16]:=T_Mat_Auslass1_Local;
+Temp_Array[17]:=T_Mat_Auslass2_Local;
+Temp_Array[18]:=T_Mat_Auslass3_Local;
+Temp_Array[19]:=T_Mat_Auslass4_Local;
+Temp_Array[20]:=T_Mat_Auslass5_Local;
+Temp_Array[21]:=T_Mat_Auslass6_Local;
+Temp_Array[22]:=T_Mat_Auslass7_Local;
+Temp_Array[23]:=T_Mat_Auslass8_Local;
+Temp_Array[24]:=T_Komp_Gehaeuse_Local;
+Temp_Array[25]:=T_DK_Band_oben1_Local;
+Temp_Array[26]:=T_DK_Band_oben3_Local;
+Temp_Array[27]:=T_DK_Band_unten1_Local;
+Temp_Array[28]:=T_DK_Band_unten3_Local;
+Temp_Array[29]:=T_DK_Steigband1_Local;
+Temp_Array[30]:=T_DK_Steigband2_Local;
+Temp_Array[31]:=T_DK_Steigband3_Local;
+Temp_Array[32]:=T_DK_Steigband4_Local;
+
+
+FOR Count := 1 TO 32 BY 1 DO
+TC_calib[count]:= T_DK_oben_Local - Temp_Array[Count];
+END_FOR;
+
+
+SE_T_1_01_Calib:=TC_calib[1];
+SE_T_1_02_Calib:=TC_calib[2];
+SE_T_1_03_Calib:=TC_calib[3];
+SE_T_1_04_Calib:=TC_calib[4];
+SE_T_1_05_Calib:=TC_calib[5];
+SE_T_1_06_Calib:=TC_calib[6];
+SE_T_1_07_Calib:=TC_calib[7];
+SE_T_1_08_Calib:=TC_calib[8];
+SE_T_1_09_Calib:=TC_calib[9];
+SE_T_2_01_Calib:=TC_calib[10];
+SE_T_2_02_Calib:=TC_calib[11];
+SE_T_2_03_Calib:=TC_calib[12];
+SE_T_3_01_Calib:=TC_calib[13];
+SE_T_3_02_Calib:=TC_calib[14];
+SE_T_3_03_Calib:=TC_calib[15];
+SE_T_3_71_Calib:=TC_calib[16];
+SE_T_3_72_Calib:=TC_calib[17];
+SE_T_3_73_Calib:=TC_calib[18];
+SE_T_3_74_Calib:=TC_calib[19];
+SE_T_3_75_Calib:=TC_calib[20];
+SE_T_3_76_Calib:=TC_calib[21];
+SE_T_3_77_Calib:=TC_calib[22];
+SE_T_3_78_Calib:=TC_calib[23];
+SE_T_3_51_Calib:=TC_calib[24];
+SE_T_1_81_Calib:=TC_calib[25];
+SE_T_1_83_Calib:=TC_calib[26];
+SE_T_1_91_Calib:=TC_calib[27];
+SE_T_1_93_Calib:=TC_calib[28];
+SE_T_3_81_Calib:=TC_calib[29];
+SE_T_3_82_Calib:=TC_calib[30];
+SE_T_3_83_Calib:=TC_calib[31];
+SE_T_3_84_Calib:=TC_calib[32];
+END_IF;
+
+
+
+
+IF Reset_Calib THEN
+	
+
+FOR Count := 1 TO 32 BY 1 DO
+TC_calib[count]:=0;
+END_FOR;
+
+SE_T_1_01_Calib:=0;
+SE_T_1_02_Calib:=0;
+SE_T_1_03_Calib:=0;
+SE_T_1_04_Calib:=0;
+SE_T_1_05_Calib:=0;
+SE_T_1_06_Calib:=0;
+SE_T_1_07_Calib:=0;
+SE_T_1_08_Calib:=0;
+SE_T_1_09_Calib:=0;
+SE_T_2_01_Calib:=0;
+SE_T_2_02_Calib:=0;
+SE_T_2_03_Calib:=0;
+SE_T_3_01_Calib:=0;
+SE_T_3_02_Calib:=0;
+SE_T_3_03_Calib:=0;
+SE_T_3_71_Calib:=0;
+SE_T_3_72_Calib:=0;
+SE_T_3_73_Calib:=0;
+SE_T_3_74_Calib:=0;
+SE_T_3_75_Calib:=0;
+SE_T_3_76_Calib:=0;
+SE_T_3_77_Calib:=0;
+SE_T_3_78_Calib:=0;
+SE_T_3_51_Calib:=0;
+SE_T_1_81_Calib:=0;
+SE_T_1_83_Calib:=0;
+SE_T_1_91_Calib:=0;
+SE_T_1_93_Calib:=0;
+SE_T_3_81_Calib:=0;
+SE_T_3_82_Calib:=0;
+SE_T_3_83_Calib:=0;
+SE_T_3_84_Calib:=0;
+
+END_IF
+
+
+
+
+
+
+
+
+
+(*________________MODBUS Server_______________________*)
+
+IF NOT bWriteRegs THEN
+
+
+	bWriteRegs :=TRUE;
+
+	fbWriteRegs.sIPAddr :=ipAddr;
+	fbWriteRegs.nQuantity := 7;
+	nUnitID:=nUnitID;
+	nTCPPort:=503;
+	fbWriteRegs.nMBAddr := 16#200;	(*Offsetadresse*)
+	fbWriteRegs.cbLength := SIZEOF(nValue);
+	fbWriteRegs.pSrcAddr := ADR(nValue);
+	fbWriteRegs.tTimeout := T#5s;
+	fbWriteRegs(bExecute:=TRUE);
+	bError:=fbWriteRegs.bError;
+	nErrID:=fbWriteRegs.nErrID;
+ELSE
+	IF  NOT fbWriteRegs.bBUSY THEN
+		bWriteRegs :=FALSE;
+	END_IF
+	fbWriteRegs(bExecute:=FALSE);
+END_IF
+
+nValue[0]:=10000; 	(*Periode of PWM Pokeys*)
+nValue[6]:=PWM_duty_cycle*100; 	(*Duty Cycle*)
+
+
+
+
+(*
+
+PWM registers accept raw PWM duty cycle timer value - 
+the resulting duty cycle is therefore the value of the duty register divided by the PWM period value. 
+Two consecutive 16-bit registers make up the 32-bit PWM duty cycle register, so you must write both.*)
+
+(*
+die 200,203 sind bytes
+
+200,201 PWM PERIOD (MSB first)
+202,203 PWM duty1 (MSB first) – pin 22 ...
+212,213 PWM duty6 (MSB first) – pin 17
+*)
+
+
+
+
+
+
+(*
+
+WICHTIG!!!!!!!!!!!!! OFFSET vomModbus Client (MAster) ist immer 32768
+
+Hier die EInstellungen im IAS:
+
+Read Input Registers (FC04)	32768
+Read Input Registers (FC04)	32769
+Read Input Registers (FC04)	32770
+Read Input Registers (FC04)	32771
+Read Input Registers (FC04)	32772
+Preset Single Register (FC06)	32768
+Preset Single Register (FC06)	32769
+Force Single Coil (FC05)	32768
+Force Single Coil (FC05)	32769
+Force Single Coil (FC05)	32770
+Read Input Status (FC02)	0
+
+
+*)
+
+
+IF Start_Auto_Export_OUT THEN
+Start_Auto_Export_INT:=1;
+ELSE
+Start_Auto_Export_INT:=0;
+END_IF;
+
+
+
+
+
+(*____________________________________________________________________________________________SIcherheiten________________________________________________________*)
+
+
+
+
+
+
+(*SIcherheit, dass   bei hohem Dampfdruck öffnet*)
+(*
+IF P_OUT_Steamgenerator > P_Steamgenerator_to_big  THEN
+Valve_SG_Preasure_release_manu;
+END_IF
+*)
+
+
+
+
+
+IF Compressor_Switch_ON_Manu = FALSE OR Compressor_ON_Manu = FALSE THEN
+Setpoint_Compressor_Visu:=0;
+END_IF;
+
+
+
+IF Circuit_1_ON = FALSE  THEN
+Setpoint_Belts_Visu_TOP:=0;
+Setpoint_Belts_Visu_bottom:=0;
+END_IF;
+
+
+IF Circuit_1_ON= FALSE  AND  M_Belt_Feeder_ON_Manu = FALSE THEN
+Setpoint_M_Belt_Feeder_Visu:=0;
+END_IF;
+
+
+
+
+
+
+(*IF SteamFAN_Switch_ON_manu = FALSE OR SteamFAN_Switch_ON_Manu = FALSE THEN
+Setpoint_SteamFAN_Visu:=0;
+END_IF;*)
+
+
+
+IF FAN_Switch_ON_Manu = FALSE OR FAN_ON_Manu = FALSE  OR SteamFan_PTC_Error THEN
+Setpoint_FAN_Visu:=0;
+END_IF;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(* Zeiten ALLGEMEIN *)
+
+
+TON1(IN:=IN_T1 , PT:=t#1s, Q=>OUT_T1 , ET=> ); (*ZEIT Hauptschütz einschalten*)
+
+TON2(IN:=IN_T2 , PT:=t#4s, Q=>OUT_T2 , ET=> ); (*ZEIT Überwachung Hauptschütz einschalten*)
+
+TON3(IN:=IN_T3 , PT:=t#200s, Q=>OUT_T3 , ET=>ET_T3 );	(*Zeit für Stellanzeige Prop-  Kugelhhan orange*)
+
+
+
+(*TON4-20 Frei! *)
+
+
+
+
+
+(*Aufstartphase*)
+
+
+
+TON21(IN:=IN_T21 , PT:=t#2s, Q=>OUT_T21 , ET=> );	(*Zeit für *)
+
+TON22(IN:=IN_T22 , PT:=t#2s, Q=>OUT_T22 , ET=> );	(*Zeit für *)
+
+TON23(IN:=IN_T23 , PT:=t#2s, Q=>OUT_T23 , ET=> );	(*Zeit für *)
+
+TON24(IN:=IN_T24 , PT:=t#2s, Q=>OUT_T24 , ET=> );	(*Zeit für *)
+
+TON25(IN:=IN_T25 , PT:=t#2s, Q=>OUT_T25 , ET=> );	(*Zeit für *)
+
+TON26(IN:=IN_T26 , PT:=t#2s, Q=>OUT_T26 , ET=> );	(*Zeit für *)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(* Hysterese DES*)
+
+
+TON100(IN:=IN_T100 , PT:=T#10s, Q=>OUT_T100 , ET=> );	(*Hyst. aufheizen Kompressor*)
+TON101(IN:=IN_T101 , PT:=T#10s, Q=>OUT_T101 , ET=> );	(*Hyst. erhitzen Wärmetauscher *)
+TON102(IN:=IN_T102 , PT:=T#10s, Q=>OUT_T102, ET=> );	(*Hyst. Dampfgehäuse*)
+TON103(IN:=IN_T103 , PT:=T#10s, Q=>OUT_T103 , ET=> );	(*Hyst.  Gehäuse abkühlen*)
+TON104(IN:=IN_T104 , PT:=T#10s, Q=>OUT_T104 , ET=> );	(*Hyst.  RES*)
+TON105(IN:=IN_T105 , PT:=T#10s, Q=>OUT_T105 , ET=> );	(*Hyst.  RES*)
+TON106(IN:=IN_T106 , PT:=T#10s, Q=>OUT_T106 , ET=> );	(*Hyst.  RES*)
+TON107(IN:=IN_T107 , PT:=T#10s, Q=>OUT_T107 , ET=> );	(*Hyst.  RES*)
+TON108(IN:=IN_T108 , PT:=T#10s, Q=>OUT_T108 , ET=> );	(*Hyst.  RES*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*
+
+CTU1(
+	CU:= C_up1,
+	RESET:= Res_C1,
+	PV:=,
+	Q=> ,
+	CV=> C_val1 );
+
+
+
+CTU2(
+	CU:= C_up2,
+	RESET:= Res_C2,
+	PV:= C_val2,
+	Q=> ,
+	CV=> );
+
+
+
+CTU3(
+	CU:= C_up3,
+	RESET:= Res_C3,
+	PV:= C_val3,
+	Q=> ,
+	CV=> );
+
+*)
+
+(*Reserve*)
+
+CTU4(
+	CU:= C_up4,
+	RESET:= Res_C4,
+	PV:= C_val4,
+	Q=> ,
+	CV=> );
+
+
+
+F_TRIG1(CLK:=Control_Manu_active , Q=>OUT_FTRIG1 );
+
+
+
+
+(*Bei dieser einfachen Variante eines PWM wird nach einem Taktmerkersignal (Pulsgen) eine Pulszeit (TP) dazugeschalten*)
+
+IF Pulse2_set_manu THEN
+
+Puls_GEN_Watervalve(bStart:=Enable_Pulsgen2 , tTakt:=REAL_TO_TIME(T_HI_Pulsegen2*1000 ), bBlink=>OUT_Pulsgen  );
+Ton_Pulsgen(IN:=OUT_Pulsgen , PT:= REAL_TO_TIME(T_Pulstime_Pulsegen2*1000 ), Q=>Valve_YB7 , ET=> );
+
+END_IF;
+
+
+
+
+
+(*Umschaltmechanismen und Übergaben Ventile*)
+
+
+
+IF V_Dampf_nach_Komp THEN
+V_Dampf_nach_Komp_String:='ZU';
+ELSE
+V_Dampf_nach_Komp_String:='Offen';
+END_IF;
+IF V_Nach_WT  THEN
+V_Nach_WT_String:='ZU';
+ELSE
+V_Nach_WT_String:='Offen';
+END_IF;
+IF V_Entlueftung_1 THEN
+V_Entlueftung_1_String:='ZU';
+ELSE
+V_Entlueftung_1_String:='Offen';
+END_IF;
+IF V_Entlueftung_2  THEN
+V_Entlueftung_2_String:='ZU';
+ELSE
+V_Entlueftung_2_String:='Offen';
+END_IF;
+IF V_Global_Res_3 THEN
+V_Global_Res_3_String:='ZU';
+ELSE
+V_Global_Res_3_String:='Offen';
+END_IF;
+IF V_Global_Res_4 THEN
+V_Global_Res_4_String:='Offen';
+ELSE
+V_Global_Res_4_String:='ZU';
+END_IF;
+IF V_Global_Res_5 THEN
+V_Global_Res_5_String:='ZU';
+ELSE
+V_Global_Res_5_String:='Offen';
+END_IF;
+
+
+
+
+
+
+(* Dies müsste ev. in die Manu-Schlaufe, falls der Auto-Betrieb aktiviert wird!!*)
+
+
+(*NO*)
+
+
+IF V_Dampf_nach_Komp_Reset THEN V_Dampf_nach_Komp_Sequence:=FALSE; END_IF;
+SR1(SET1:= V_Dampf_nach_Komp_manu OR V_Dampf_nach_Komp_Sequence  , RESET:=V_Dampf_nach_Komp_Reset  OR V_Dampf_nach_Komp_Reset_Sequence , Q1=> V_Dampf_nach_Komp_negiert );
+
+(*Da dies ein 3/2-Wege ventil ist muss immer eine Seite des Ventils angesteuert sein, darum die negierte variable*)
+V_Dampf_nach_Komp:= NOT V_Dampf_nach_Komp_negiert;
+
+(*NO*)
+IF V_Nach_WT_Reset  THEN V_Nach_WT_Sequence:=FALSE; END_IF;
+SR2(SET1:= V_Nach_WT_manu OR V_Nach_WT_Sequence  , RESET:=V_Nach_WT_Reset  OR V_Nach_WT_Reset_Sequence , Q1=> V_Nach_WT_negiert);
+V_Nach_WT :=NOT V_Nach_WT_negiert;
+
+
+(*NO*)
+IF V_Entlueftung_1_Reset THEN V_Entlueftung_1_Sequence:=FALSE; END_IF;
+SR3(SET1:= V_Entlueftung_1_manu OR V_Entlueftung_1_Sequence  , RESET:=V_Entlueftung_1_Reset OR V_Entlueftung_1_Reset_Sequence , Q1=> V_Entlueftung_1);
+V_Entlueftung_1_negiert:=NOT V_Entlueftung_1;
+
+
+(*NO*)
+IF V_Entlueftung_2_Reset THEN V_Entlueftung_2_Sequence:=FALSE; END_IF;
+SR4(SET1:= V_Entlueftung_2_manu  OR V_Entlueftung_2_Sequence  , RESET:=V_Entlueftung_2_Reset OR V_Entlueftung_2_Reset_Sequence , Q1=> V_Entlueftung_2 );
+V_Entlueftung_2_negiert:=NOT V_Entlueftung_2;
+
+(*NO*)
+IF V_Global_Res_3_Reset  THEN V_Global_Res_3_Sequence:=FALSE; END_IF;
+SR5(SET1:= V_Global_Res_3_manu  OR V_Global_Res_3_Sequence  , RESET:=V_Global_Res_3_Reset  OR V_Global_Res_3_Reset_Sequence, Q1=> V_Global_Res_3 );
+V_Global_Res_3_negiert:=NOT V_Global_Res_3;
+
+
+(*NC*)
+IF V_Global_Res_4_Reset  THEN V_Global_Res_4_Sequence:=FALSE; END_IF;
+SR6(SET1:= V_Global_Res_4_manu  OR V_Global_Res_4_Sequence  , RESET:= V_Global_Res_4_Reset  OR  V_Global_Res_4_Reset_Sequence, Q1=>  V_Global_Res_4 );
+V_Global_Res_4_negiert:=NOT  V_Global_Res_4;
+
+
+(*NO*)
+IF V_Global_Res_5_Reset THEN V_Global_Res_5_Sequence:=FALSE; END_IF;
+SR7(SET1:= V_Global_Res_5_manu OR V_Global_Res_5_Sequence  , RESET:=V_Global_Res_5_Reset  OR V_Global_Res_5_Reset_Sequence , Q1=> V_Global_Res_5 );
+V_Global_Res_5_negiert:=NOT V_Global_Res_5;
+
+
+
+
+
+
+
+
+
+
+
+F_TRIG2(CLK:=V_Dampf_nach_Komp_Sequence );
+IF F_TRIG2.Q THEN
+V_Dampf_nach_Komp_Reset_Sequence :=TRUE;
+ELSE
+V_Dampf_nach_Komp_Reset_Sequence :=FALSE;
+END_IF;
+
+F_TRIG3(CLK:=V_Nach_WT_Sequence );
+IF F_TRIG3.Q THEN
+V_Nach_WT_Reset_Sequence :=TRUE;
+ELSE
+V_Nach_WT_Reset_Sequence :=FALSE;
+END_IF;
+
+F_TRIG4(CLK:=V_Entlueftung_1_Sequence );
+IF F_TRIG4.Q THEN
+V_Entlueftung_1_Reset_Sequence :=TRUE;
+ELSE
+V_Entlueftung_1_Reset_Sequence :=FALSE;
+END_IF;
+
+F_TRIG5(CLK:=V_Entlueftung_2_Sequence );
+IF F_TRIG5.Q THEN
+V_Entlueftung_2_Reset_Sequence :=TRUE;
+ELSE
+V_Entlueftung_2_Reset_Sequence :=FALSE;
+END_IF;
+
+F_TRIG6(CLK:=V_Global_Res_3_Sequence );
+IF F_TRIG6.Q THEN
+V_Global_Res_3_Reset_Sequence :=TRUE;
+ELSE
+V_Global_Res_3_Reset_Sequence :=FALSE;
+END_IF;
+
+
+F_TRIG7(CLK:=V_Global_Res_4_Sequence );
+IF F_TRIG7.Q THEN
+V_Global_Res_4_Reset_Sequence :=TRUE;
+ELSE
+V_Global_Res_4_Reset_Sequence :=FALSE;
+END_IF;
+
+F_TRIG8(CLK:=V_Global_Res_5_Sequence );
+IF F_TRIG8.Q THEN
+V_Global_Res_5_Reset_Sequence :=TRUE;
+ELSE
+V_Global_Res_5_Reset_Sequence :=FALSE;
+END_IF;
+
+
+
+
+
+
+
+
+
+V_Dampf_nach_Komp_Sequence:=VE_K2_71;
+V_Nach_WT_Sequence:=VE_K2_73;
+(*
+V_Entlueftung_1_Sequence:=VE_K3_13;
+V_Entlueftung_2_Sequence:=VE_K3_14;
+V_Global_Res_3_Sequence:=VE_K3_18;
+V_Global_Res_4_Sequence:=VE_K3_19;
+V_Global_Res_5_Sequence:=VE_K3_20;
+*)
+
+
+
+(*
+IF GVL.P_Komp_Auslass_Visu > 4500 THEN
+
+GVL.V_Dampf_nach_Komp_manu:=TRUE;
+	
+END_IF
+*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*Signalsäule Test*)
+
+LED_RED_OUT:= LED_RED_VISU OR LED_RED_auto;
+LED_green_OUT:= LED_green_VISU OR LED_green_auto;
+LED_yellow_OUT:= LED_yellow_VISU OR LED_yellow_auto;
+LED_white_OUT:= LED_white_VISU OR LED_white_auto;
+
+
+IF counup_Array >= 10000 THEN
+	counup_Array:=0;
+	aArray_Histogram[0]:=0;
+	aArray_Histogram[1]:=0;
+	aArray_Histogram[2]:=0;
+	aArray_Histogram[3]:=0;
+	aArray_Histogram[4]:=0;
+	aArray_Histogram[5]:=0;
+
+	
+END_IF;
+
+counup_Array:=counup_Array+1;
+
+counup_Array_OUT:=counup_Array/100;
+
+counup_Array:=counup_Array+counup_Array;
+aArray_Histogram[0]:=counup_Array_OUT+11;
+aArray_Histogram[1]:=counup_Array_OUT+22;
+aArray_Histogram[2]:=counup_Array_OUT+33;
+aArray_Histogram[3]:=counup_Array_OUT+44;
+aArray_Histogram[4]:=counup_Array_OUT+55;
+aArray_Histogram[5]:=counup_Array_OUT+66;
+
+
+
+
+
+(*Scope-View ZuweisunG
+
+
+Da die anzahl der Var. welche beim Einlesen vom Scope view2 beschränkt ist, wurde eine zweite globale Var-Tabelle (GVL_1) deklariert
+Diese dort einhaltenen Vars werden mit dem selben Prfix GVL_1.xy aufgerufen. Die Anzahl dort enthaltenen vars sind einiges weniger und deshalb können diese Infos vom Scope eingelesen werden*)
+
+
+
+
+GVL_1.SE_T_1_01:=T_Vor_WT_Visu;
+GVL_1.SE_T_1_02:=T_nach_WT_Visu;
+GVL_1.SE_T_1_03:=T_HE_Einduesung_Oben_Visu;
+GVL_1.SE_T_1_04:=T_HE_Einduesung_Unten_Visu;
+GVL_1.SE_T_1_05:=T_Einduesung_Oben_Visu;
+GVL_1.SE_T_1_06:=T_Einduesung_Unten_Visu;
+GVL_1.SE_T_1_07:=T_Absaugung_Oben_Visu;
+GVL_1.SE_T_1_08:=T_Absaugung_Unten_Visu;
+GVL_1.SE_T_1_09:=T_Vor_UmdampfLuefter_Visu;
+GVL_1.SE_T_2_01:=T_Komp_Einlass_Visu;
+GVL_1.SE_T_2_02:=T_Komp_Auslass_Visu;
+GVL_1.SE_T_2_03:=T_Kond_Auslass_Visu;
+GVL_1.SE_T_3_01:=T_DK_Oben_Visu;
+GVL_1.SE_T_3_02:=T_DK_Mitte_Visu;
+GVL_1.SE_T_3_03:=T_DK_Unten_Visu;
+GVL_1.SE_T_3_71:=T_Mat_Auslass1_Visu;
+GVL_1.SE_T_3_72:=T_Mat_Auslass2_Visu;
+GVL_1.SE_T_3_73:=T_Mat_Auslass3_Visu;
+GVL_1.SE_T_3_74:=T_Mat_Auslass4_Visu;
+GVL_1.SE_T_3_75:=T_Mat_Auslass5_Visu;
+GVL_1.SE_T_3_76:=T_Mat_Auslass6_Visu;
+GVL_1.SE_T_3_77:=T_Mat_Auslass7_Visu;
+GVL_1.SE_T_3_78:=T_Mat_Auslass8_Visu;
+GVL_1.SE_T_1_81:=T_DK_Band_oben1_Visu;
+GVL_1.SE_T_1_83:=T_DK_Band_oben3_Visu;
+GVL_1.SE_T_1_91:=T_DK_Band_unten1_Visu;
+GVL_1.SE_T_1_93:=T_DK_Band_unten3_Visu;
+GVL_1.SE_T_3_81:=T_DK_Steigband1_Visu;
+GVL_1.SE_T_3_82:=T_DK_Steigband2_Visu;
+GVL_1.SE_T_3_83:=T_DK_Steigband3_Visu;
+GVL_1.SE_T_3_51:=T_Komp_Gehaeuse_Visu;
+GVL_1.SE_P_1_11:=P_Vor_WT_Visu;
+GVL_1.SE_P_1_12:=P_nach_WT_Visu;
+GVL_1.SE_P_2_11:=P_Komp_Einlass_Visu;
+GVL_1.SE_P_2_12:=P_Komp_Auslass_Visu;
+GVL_1.SE_P_2_13:=P_Kond_Auslass_Visu;
+GVL_1.SE_P_2_14:=P_Abs_Amb_Visu;
+GVL_1.SE_O2_1_51:=O2_Visu;
+GVL_1.Current_LOG_SteamGen1:=Current_OUT_SteamGen1;
+GVL_1.Current_LOG_SteamGen2:=Current_OUT_SteamGen2;
+GVL_1.Current_LOG_SteamGen3:=Current_OUT_SteamGen3;
+GVL_1.Current_LOG_Compressor_L1:=Current_OUT_Compressor_L1;
+GVL_1.Current_LOG_Compressor_L2:=Current_OUT_Compressor_L2;
+GVL_1.Current_LOG_Complete_L3:=Current_OUT_Compressor_L3;
+GVL_1.Current_LOG_Heatreg_1_TO_4:=Current_OUT_Heatreg_1_TO_4;
+GVL_1.Current_LOG_Heatreg_5_TO_8:=Current_OUT_Heatreg_5_TO_8;
+GVL_1.Current_LOG_Heatreg_Compressor:=Current_OUT_Heatreg_Compressor;
+GVL_1.Current_LOG_Fan_L1:=Current_OUT_Fan_L1;
+GVL_1.Current_LOG_Fan_L2:=Current_OUT_Fan_L2;
+GVL_1.Current_LOG_Fan_L3:=Current_OUT_Fan_L3;
+GVL_1.Current_LOG_Complete_L1:=Current_OUT_Complete_L1;
+GVL_1.Current_LOG_Complete_L2:=Current_OUT_Complete_L2;
+GVL_1.Current_LOG_Complete_L3:=Current_OUT_Complete_L3;
+
+
+GVL_1.Setpoint_M_Belts:=Setpoint_Belts_TOP_IN;
+GVL_1.Setpoint_Belt_Feeder:=Setpoint_M_Belt_Feeder_IN;
+GVL_1.Setpoint_SteamFan:=Setpoint_SteamFan_IN;
+GVL_1.Setpoint_Compressor:=Setpoint_Compressor_IN;
+GVL_1.Ps_202_out:=Ps_202;
+GVL_1.Ps_203_out:=Ps_203;
+GVL_1.volFracAir202_out:=volFracAir202;
+GVL_1.volFracAir203_out:=volFracAir203;
+GVL_1.volFracAirO2_out:=volFracAirO2;
+
+
+
+
+
+
+IF SteamFAN_Switch_ON_manu AND SteamFan_ON_manu AND  Setpoint_SteamFan_Visu  >20.0 THEN
+OK_For_HEAT_WHILE_FAN_IS_ON:=TRUE;
+ELSE
+OK_For_HEAT_WHILE_FAN_IS_ON:=FALSE;
+END_IF;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

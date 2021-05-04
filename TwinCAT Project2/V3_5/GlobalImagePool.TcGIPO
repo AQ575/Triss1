@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <GlobalImagePool Name="GlobalImagePool" Id="{fc78c95f-a5ae-4a77-aecd-c933e8f27592}">
+    <XmlArchive>
+      <Data>
+        <o xml:space="preserve" t="GlobalImagePoolObject">
+          <v n="UniqueIdGenerator">"9"</v>
+          <l n="BitmapPool" t="ArrayList" cet="ImagePoolItem">
+            <o>
+              <v n="BitmapID">"AQ"</v>
+              <v n="FileID">"5ce3da45-db07-42e7-a21c-a00fff4ed8f6|C:\Users\bio\Desktop\Triss_V1.3_IPC\Aquaero_logo.png"</v>
+              <v n="ItemID">3</v>
+            </o>
+            <o>
+              <v n="BitmapID">"Triss_PID_V5"</v>
+              <v n="FileID">"5ce3da45-db07-42e7-a21c-a00fff4ed8f6|C:\Users\bio\Desktop\Triss_V1.3_IPC\Triss_PID_V5.jpg"</v>
+              <v n="ItemID">4</v>
+            </o>
+            <o>
+              <v n="BitmapID">""</v>
+              <v n="FileID">""</v>
+              <v n="ItemID">5</v>
+            </o>
+          </l>
+          <v n="GuidInit">{35ebcffa-6de4-4386-8aa7-96cbbd578454}</v>
+          <v n="GuidReInit">{7e580996-e904-49f9-97d8-434c7baf4e98}</v>
+          <v n="GuidExitX">{36bdd1b0-fe5e-498f-9fc5-9cad9354fade}</v>
+          <v n="ValidIds">true</v>
+        </o>
+      </Data>
+      <TypeList>
+        <Type n="ArrayList">System.Collections.ArrayList</Type>
+        <Type n="Boolean">System.Boolean</Type>
+        <Type n="GlobalImagePoolObject">{795b536d-9cec-4fc3-a972-50e1e08d20e8}</Type>
+        <Type n="Guid">System.Guid</Type>
+        <Type n="ImagePoolItem">{215b2719-0347-4e4d-ba85-8bcd66946f66}</Type>
+        <Type n="Int32">System.Int32</Type>
+        <Type n="String">System.String</Type>
+      </TypeList>
+    </XmlArchive>
+  </GlobalImagePool>
+</TcPlcObject>

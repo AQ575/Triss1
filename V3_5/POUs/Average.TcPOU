@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <POU Name="Average" Id="{e8d23421-d257-467d-bc0f-bcc3c0fc4e25}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Average
+VAR_INPUT
+	Input_AV: REAL;
+END_VAR
+VAR_OUTPUT
+	OUTPUT_AV:REAL;
+END_VAR
+VAR
+	C_AV: INT;
+	summary_AV: REAL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+CASE C_AV OF
+
+
+0:summary_AV:=0;	C_AV:=1;
+1:summary_AV:=Input_AV;	C_AV:=2;
+2:summary_AV:=summary_AV+Input_AV; C_AV:=3;
+3:summary_AV:=summary_AV+Input_AV; C_AV:=4;
+4:summary_AV:=summary_AV+Input_AV; C_AV:=5;
+5:summary_AV:=summary_AV+Input_AV; C_AV:=6;
+6:summary_AV:=summary_AV+Input_AV; C_AV:=7;
+7:summary_AV:=summary_AV+Input_AV; C_AV:=8;
+8:summary_AV:=summary_AV+Input_AV; C_AV:=9;
+9:summary_AV:=summary_AV+Input_AV; C_AV:=10;
+10:summary_AV:=summary_AV+Input_AV; C_AV:=11;
+11:summary_AV:=summary_AV+Input_AV; C_AV:=12;
+12:summary_AV:=summary_AV+Input_AV; C_AV:=13;
+13:summary_AV:=summary_AV+Input_AV; C_AV:=14;
+14:summary_AV:=summary_AV+Input_AV; C_AV:=15;
+15:summary_AV:=summary_AV+Input_AV; C_AV:=16;
+16:summary_AV:=summary_AV+Input_AV; C_AV:=17;
+17:summary_AV:=summary_AV+Input_AV; C_AV:=18;
+18:summary_AV:=summary_AV+Input_AV; C_AV:=19;
+19:summary_AV:=summary_AV+Input_AV; C_AV:=20;
+20:summary_AV:=summary_AV+Input_AV; C_AV:=21;
+21:summary_AV:=summary_AV+Input_AV; C_AV:=22;
+22:summary_AV:=summary_AV+Input_AV; C_AV:=23;
+23:summary_AV:=summary_AV+Input_AV; C_AV:=24;
+24:summary_AV:=summary_AV+Input_AV; C_AV:=25;
+25:summary_AV:=summary_AV+Input_AV; C_AV:=26;
+26:summary_AV:=summary_AV+Input_AV; C_AV:=27;
+27:summary_AV:=summary_AV+Input_AV; C_AV:=28;
+28:summary_AV:=summary_AV+Input_AV; C_AV:=29;
+29:summary_AV:=summary_AV+Input_AV; C_AV:=30;
+30:summary_AV:=summary_AV+Input_AV; C_AV:=31;
+31:summary_AV:=summary_AV+Input_AV; C_AV:=32;
+32:summary_AV:=summary_AV+Input_AV; C_AV:=33;
+33:summary_AV:=summary_AV+Input_AV; C_AV:=34;
+34:summary_AV:=summary_AV+Input_AV; C_AV:=35;
+35:summary_AV:=summary_AV+Input_AV; C_AV:=36;
+36:summary_AV:=summary_AV+Input_AV; C_AV:=37;
+37:summary_AV:=summary_AV+Input_AV; C_AV:=38;
+38:summary_AV:=summary_AV+Input_AV; C_AV:=39;
+39:summary_AV:=summary_AV+Input_AV; C_AV:=40;
+40:summary_AV:=summary_AV+Input_AV; C_AV:=41;
+41:summary_AV:=summary_AV+Input_AV; C_AV:=42;
+42:summary_AV:=summary_AV+Input_AV; C_AV:=43;
+43:summary_AV:=summary_AV+Input_AV; C_AV:=44;
+44:summary_AV:=summary_AV+Input_AV; C_AV:=45;
+45:summary_AV:=summary_AV+Input_AV; C_AV:=46;
+46:summary_AV:=summary_AV+Input_AV; C_AV:=47;
+47:summary_AV:=summary_AV+Input_AV; C_AV:=48;
+48:summary_AV:=summary_AV+Input_AV; C_AV:=49;
+49:summary_AV:=summary_AV+Input_AV; C_AV:=50;
+50:summary_AV:=summary_AV+Input_AV; C_AV:=51;
+51:OUTPUT_AV:=summary_AV/50.0; C_AV:=0;
+
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="Average">
+      <LineId Id="3" Count="57" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

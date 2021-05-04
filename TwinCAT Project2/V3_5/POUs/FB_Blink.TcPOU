@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.6">
+  <POU Name="FB_Blink" Id="{fc5c0aeb-260c-42cb-b65a-69d4c30fad72}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Blink
+VAR_INPUT
+	bStart:BOOL;
+	tTakt:TIME:=t#0.5s;
+END_VAR
+VAR_OUTPUT
+	bBlink:BOOL;
+END_VAR
+VAR
+	fbT1:TON;
+	fbT2:TON;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[(*erste Hälfte der Blinkperiode, FB-Aufruf und Beschaltung in einem *)
+fbT1(IN:=bStart AND NOT fbt2.Q,
+	PT:= tTakt/2,
+	Q=> bBlink,
+	ET=> );
+
+
+(*zweite Hälfte der Blinkperiode; Bsp. programmiert mit getrennter Beschaltung und Aufruf*)
+
+fbt2.IN := fbT1.Q;   		(*vorheriges Beschalten der InputVar*)
+fbt2.PT := tTakt / 2;  	(*vorheriges Beschalten der InputVar*)
+
+fbT2();  					(*eigentliche FB-Instanz-Aufruf*)]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

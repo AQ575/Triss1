@@ -1,0 +1,5 @@
+Id;Default;de;en
+0;de;Deutsch;German
+;en;Englisch;English
+;num;;
+;;;

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <POU Name="Meine_HYST" Id="{5e55ae11-efa2-4674-b8d6-db467dd200f9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Meine_HYST
+VAR_INPUT
+	Hyst_Value: INT;
+	Hyst_Low_Limit: INT;
+	Hyst_Hight_Limit: INT;
+END_VAR
+VAR_OUTPUT
+	Hyst_OUT:BOOL ;
+END_VAR
+VAR
+(*ZEITEN*)
+
+	TON1:TON;
+	IN_T1:BOOL;
+	OUT_T1:BOOL;
+	TON2:TON;
+	IN_T2:BOOL;
+	OUT_T2:BOOL;
+
+
+
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+(*Hyterese Universell für Heizmatten*)
+
+IF Hyst_Value < Hyst_Low_Limit  THEN IN_T1:=TRUE; ELSE IF Hyst_Value  >= Hyst_Hight_Limit   THEN IN_T1:=FALSE; END_IF END_IF
+IF OUT_T1 THEN Hyst_OUT:=TRUE; ELSE Hyst_OUT:=FALSE; END_IF
+
+
+
+TON1(IN:=IN_T1 , PT:=t#30s, Q=>OUT_T1 , ET=> ); (*ZEIT Hauptschütz einschalten*)
+
+TON2(IN:=IN_T2 , PT:=t#30s, Q=>OUT_T2 , ET=> ); (*ZEIT Überwachung Hauptschütz einschalten*)]]></ST>
+    </Implementation>
+    <LineIds Name="Meine_HYST">
+      <LineId Id="3" Count="11" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

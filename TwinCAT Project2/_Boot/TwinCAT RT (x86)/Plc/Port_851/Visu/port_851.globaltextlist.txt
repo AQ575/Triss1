@@ -1,0 +1,241 @@
+Id;Default
+81;% s
+184;%2.1f %
+220;%2.1f (mbar)
+188;%2.1f KI (%)
+187;%2.1f KP (%)
+124;%2.1f Value Comp PT100
+36;%2u
+32;%2u 
+185;%2u %
+91;%3.2f
+103;%3.2f  
+152;%3.2f  (mbar)
+50;%3.2f  (°C)
+217;%3.2f  Heizband2
+218;%3.2f  Heizband3
+141;%3.2f  SEO2 1.51
+122;%3.2f  SEP1.11
+119;%3.2f  SEP2.11
+121;%3.2f  SEP2.12
+90;%3.2f  SET2.8
+227;%3.2f  SET3.8
+142;%3.2f  SEW 2.31
+219;%3.2f  T.Mittel
+205;%3.2f (ms)
+149;%3.2f Comp.L1
+150;%3.2f Comp.L2
+151;%3.2f Comp.L3
+99;%3.2f Heatreg 2
+100;%3.2f Heatreg1
+128;%3.2f Heatreg2
+101;%3.2f Heatreg3
+157;%3.2f Heatreg4
+158;%3.2f Heatreg5
+159;%3.2f Heatreg6
+160;%3.2f Heatreg7
+161;%3.2f Heatreg8
+146;%3.2f Main L1
+147;%3.2f Main L2
+148;%3.2f Main L3
+109;%3.2f SET 1.01
+110;%3.2f SET 1.02 
+111;%3.2f SET 1.03 
+112;%3.2f SET 1.04 
+113;%3.2f SET 1.05
+114;%3.2f SET 1.06
+115;%3.2f SET 1.07
+116;%3.2f SET 1.08
+117;%3.2f SET 1.09
+173;%3.2f SET 1.81 
+174;%3.2f SET 1.82
+175;%3.2f SET 1.83
+176;%3.2f SET 1.91
+177;%3.2f SET 1.92
+178;%3.2f SET 1.93
+162;%3.2f SET 2.01
+163;%3.2f SET 2.02 
+164;%3.2f SET 2.03 
+165;%3.2f SET 3.01 
+166;%3.2f SET 3.02
+167;%3.2f SET 3.03
+168;%3.2f SET 3.71
+169;%3.2f SET 3.72
+170;%3.2f SET 3.73
+171;%3.2f SET 3.74
+179;%3.2f SET 3.81
+180;%3.2f SET 3.82
+181;%3.2f SET 3.83
+182;%3.2f SET 3.84
+172;%3.2f SET 4.01
+140;%3.2f SET Ambiente
+236;%3.2f Tauch-HZ. L1
+235;%3.2f Tauch-HZ. L2
+234;%3.2f Tauch-HZ. L3
+125;%3.2f UD  L1
+126;%3.2f UD  L2
+127;%3.2f UD  L3
+130;%3u Temp. Heatmatt1 
+139;%3u Temp. Heatmatt10 
+131;%3u Temp. Heatmatt2 
+132;%3u Temp. Heatmatt3 
+133;%3u Temp. Heatmatt4 
+134;%3u Temp. Heatmatt5 
+135;%3u Temp. Heatmatt6 
+136;%3u Temp. Heatmatt7 
+137;%3u Temp. Heatmatt8
+138;%3u Temp. Heatmatt9 
+24;%s
+191;Activate
+20;Advanced$R$NControl
+186;Ausgabe Stellwert
+17;Auto
+87;Auto active
+92;Auto-Output
+28;Check Comp$R$NTemperature!
+27;Continue$R$NStartup
+68;Current Total [A]
+86;Default=Auto active
+216;DO1
+230;DO2
+233;DO3
+231;DO4
+120;Druck (mBar):
+25;Durchmesser in mm eingeben
+98;Duty Cycle
+69;Electrical Power [kW]
+40;FU OK
+38;FU ON
+13;Group1
+12;Group2
+11;Group3
+97;Hauptschütz
+155;Heatregister
+226;Heizeinschraubkörper:
+74;Heizelemente ON/OFF
+10;Heizmatten
+73;Heizmatten ON/OFF
+143;Heizmatten:
+215;Heizregister Kompressor
+89;Heizregister:
+85;Heizreglerbetrieb:
+43;Hysterese hoch (°C)
+42;Hysterese tief (°C)
+210;In Progress
+223;Integralwert
+225;Istwert Vordruck Scrolli
+154;Kompressor
+153;Kompressoreinlass
+228;L1:
+229;L2:
+232;L3:
+14;Main ON
+94;Main-Output
+129;Main: in (A)
+19;Manu
+93;Manu-Output
+34;MANUEL BETRIEB
+0;Mat1
+9;Mat10
+2;Mat2
+4;Mat3
+6;Mat4
+8;Mat5
+1;Mat6
+3;Mat7
+5;Mat8
+7;Mat9
+207;Next Step
+29;OK for $R$NOperation
+88;ON/OFF
+23;ON1
+22;ON2
+21;ON3
+71;Press. Umg
+224;Proportionalwert
+33;PWM Output 0-100%
+96;Ref. Temp
+183;Regelparameter Kompressor Klauenkolben
+193;Regelparameter Kompressor Scrolli
+192;Regelparameter Nadelventil
+61;Rel. P OUT
+62;Rel. P TM
+54;Rel. P WT
+18;Reset
+15;Reset 
+213;Reset Seq.
+67;RPM Des. Venti [%]
+65;RPM Kompressor [%]
+238;S
+209;Schrittnummer:
+37;Schütz
+59;SE-P2.2
+56;SE-P2.5
+64;SE-P3.11
+57;SE-P3.3
+76;SE-P3.32
+63;SE-P6.2
+60;SE-T2.3
+78;SE-T2.51
+80;SE-T2.52
+55;SE-T2.6
+53;SE-T2.8
+70;SE-T3.31
+77;SE-T3.33
+58;SE-T3.4
+66;SE-T3.51
+79;SE-T3.52
+212;Sequence End
+95;Setpoint
+123;Sicherheitstemps:
+239;Sollwert
+190;Sollwert Druck Dampfkammer
+49;Sollwert Horizontalband
+39;Sollwert Kompressor
+222;Sollwert Primär Kompressor
+52;Sollwert Steigförderer
+35;Sollwert Umdampfventilator
+221;Sollwert Vordruck Scrolli
+26;Start$R$NAutostart
+208;Start Again
+211;Start Point
+30;Startup$R$Nfinished
+31;Startup Active
+189;Stellwert Kompressor Manu
+214;Step back
+102;Stromverbrauch: in (A)
+16;Switch OFF
+105;T.Monitor 1 SE-T 1.03
+107;T.Monitor 1 SE-T 1.04
+106;T.Monitor 2 SE-T 1.05
+108;T.Monitor 2 SE-T 1.06
+41;Temp$R$NError
+145;Temp$R$NError comp.
+144;Temp$R$NError SteamFan
+237;Temp. $R$NKompressor Gehause
+51;Temp. Kompressor Gehause
+72;Temp. Umg
+118;Temperaturen (°C):
+104;Tempimit switch OFF (°C)$R$Ngroup TOP
+75;TM
+156;Umdampfventi
+203;V-Dichtring$R$NAuslass
+202;V-Dichtring$R$NEinlass
+47;V1
+44;V2
+45;V3
+46;V4
+48;V5
+196;Vacuum1
+195;Vacuum2
+84;VE-K 2.71$R$N$R$NVE-K 2.73
+82;VE-K2.71
+83;VE-K2.73
+194;VE-K3.05
+197;VE-K3.06
+198;VE-K3.13
+199;VE-K3.19
+200;VE-K3.20
+201;VE-K3.21
+204;VE-K3.22
+206;Zykluszeit Reglerausgnag (ms)
